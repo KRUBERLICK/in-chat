@@ -21,10 +21,10 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
         tableNode.delegate = self
         title = NSLocalizedString("profile", comment: "")
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: NSLocalizedString("logout", comment: ""),
+            image: #imageLiteral(resourceName: "ic_more"),
             style: .plain,
             target: self,
-            action: #selector(ProfileViewController.logout)
+            action: #selector(ProfileViewController.moreButtonTapped)
         )
         node.backgroundColor = .lightBackground
     }
@@ -73,6 +73,24 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
                 )
             })
             .addDisposableTo(disposeBag)
+    }
+
+    @objc private func moreButtonTapped() {
+        let alertController = UIAlertController(title: nil,
+                                                message: nil,
+                                                preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("cancel", comment: ""),
+                                         style: .cancel,
+                                         handler: nil)
+        let logoutAction = UIAlertAction(title: NSLocalizedString("logout", comment: ""),
+                                         style: .destructive,
+                                         handler: { [unowned self] _ in
+                                            self.logout()
+        })
+
+        alertController.addAction(logoutAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
     }
 
     @objc private func logout() {
