@@ -126,6 +126,42 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
                     }, completion: nil)
             })
     }
+
+    fileprivate func showAvatarPickMenu() {
+        let alertController = UIAlertController(
+            title: NSLocalizedString("change_avatar", comment: ""),
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        let makePhotoAction = UIAlertAction(
+            title: NSLocalizedString("make_photo", comment: ""),
+            style: .default,
+            handler: { _ in
+
+        })
+        let chooseFromGalleryAction = UIAlertAction(
+            title: NSLocalizedString("choose_from_gallery", comment: ""),
+            style: .default,
+            handler: { _ in
+
+        })
+        let removeAvatarAction = UIAlertAction(
+            title: NSLocalizedString("remove_avatar", comment: ""),
+            style: .destructive,
+            handler: { _ in
+
+        })
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("cancel", comment: ""),
+            style: .cancel,
+            handler: nil)
+
+        alertController.addAction(makePhotoAction)
+        alertController.addAction(chooseFromGalleryAction)
+        alertController.addAction(removeAvatarAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
 }
 
 extension ProfileViewController: ASTableDelegate, ASTableDataSource {
@@ -163,6 +199,13 @@ extension ProfileViewController: ASTableDelegate, ASTableDataSource {
                                 message: NSLocalizedString("unknown_error", comment: "")
                             )
                         })
+                }
+                cellNode.onAvatarTap = { [weak self] in
+                    guard let strongSelf = self else {
+                        return
+                    }
+
+                    strongSelf.showAvatarPickMenu()
                 }
                 return cellNode
             }

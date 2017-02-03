@@ -37,6 +37,7 @@ class ProfileHeaderCellNode: ASCellNode {
     private var nameNode: ASDisplayNode!
     private var user: User
     var onUserUpdate: ((User) -> ())?
+    var onAvatarTap: (() -> ())?
     private var keyboardController: KeyboardController!
 
     // FIXME: Remove temporary mock
@@ -52,6 +53,9 @@ class ProfileHeaderCellNode: ASCellNode {
             avatarImageNode.image = #imageLiteral(resourceName: "default_avatar")
         }
         nameTextField.text = user.name
+        avatarImageNode.addTarget(self,
+                                  action: #selector(ProfileHeaderCellNode.avatarTapHandler),
+                                  forControlEvents: .touchUpInside)
     }
 
     override func didLoad() {
@@ -99,5 +103,9 @@ class ProfileHeaderCellNode: ASCellNode {
 
     @objc fileprivate func hideKeyboard() {
         keyboardController.hideKeyboard()
+    }
+
+    @objc private func avatarTapHandler() {
+        avatarImageNode.animateTap(completion: onAvatarTap)
     }
 }
