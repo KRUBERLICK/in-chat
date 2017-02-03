@@ -47,6 +47,7 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        view.endEditing(false)
         disposeBag = DisposeBag()
     }
 
@@ -148,10 +149,18 @@ extension ProfileViewController: ASTableDelegate, ASTableDataSource {
                 return cellNode
             }
         case 1:
-            return {
-                let cellNode = ASCellNode()
+            return { [weak self] in
+                guard let strongSelf = self else {
+                    return ASCellNode()
+                }
 
-                cellNode.backgroundColor = .green
+                let cellNode: ProfileEmailCellNode
+
+                if let email = strongSelf.user?.email {
+                    cellNode = ProfileEmailCellNode(email: email)
+                } else {
+                    cellNode = ProfileEmailCellNode()
+                }
                 return cellNode
             }
         default:
