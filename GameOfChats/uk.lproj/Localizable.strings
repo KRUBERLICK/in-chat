@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  GameOfChats
+
+  Created by Daniel Ilchishyn on 1/31/17.
+  Copyright © 2017 KRUBERLICK. All rights reserved.
+*/
+
+"login" = "Вхід";
+"logout" = "Вихід";

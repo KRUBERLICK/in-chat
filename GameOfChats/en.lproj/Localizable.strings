@@ -1,0 +1,33 @@
+/* 
+  Localizable.strings
+  GameOfChats
+
+  Created by Daniel Ilchishyn on 1/31/17.
+  Copyright © 2017 KRUBERLICK. All rights reserved.
+*/
+
+"login" = "Login";
+"register" = "Register";
+"logout" = "Logout";
+"your_name" = "Your name";
+"email" = "Email";
+"password" = "Password";
+"password_confirm" = "Confirm";
+"not_registered" = "Not registered?";
+"have_an_account" = "Have an account?";
+"create_account" = "Create an account";
+"ok" = "OK";
+"error" = "Error";
+"input_all_fields" = "Input all fields";
+"passwords_dont_match" = "Passwords do not match";
+"invalid_email_format" = "Invalid email format";
+"weak_password_error" = "Password should be at least 6 characters long";
+"email_already_in_use" = "Email already in use";
+"unknown_error" = "Unknown error";
+"user_disabled" = "User has been disabled";
+"wrong_password" = "Wrong password";
+"wrong_email" = "Wrong email";
+"user_not_found" = "User not found";
+"network_error" = "Network error";
+"new_message" = "New message";
+"profile" = "Profile";
