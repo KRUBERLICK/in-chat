@@ -16,7 +16,6 @@ class UserCellNode: ASCellNode {
     var onTap: ((User) -> ())?
     private var user: User
 
-    // FIXME: Remove default mock
     init(user: User) {
         self.user = user
         super.init()

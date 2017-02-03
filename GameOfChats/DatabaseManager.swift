@@ -53,17 +53,73 @@ class DatabaseManager {
                 return Disposables.create()
             }
 
-            strongSelf.usersNode.child(user.uid)
-                .updateChildValues(["name": user.name,
-                                    "email": user.email],
-                                   withCompletionBlock: { error, ref in
-                                    if let error = error {
-                                        observer.onError(error)
-                                        return
-                                    }
-                                    observer.onNext(true)
+            if let localAvatarImage = user.localImage {
+                let imageData = UIImagePNGRepresentation(localAvatarImage)!
+
+                FIRStorage.storage().reference()
+                    .child(user.uid + "-avatar.png")
+                    .put(imageData, metadata: nil,
+                         completion: { [weak self] metadata, error in
+                            guard let downloadURL = metadata?.downloadURL(),
+                                let strongSelf = self else {
                                     observer.onCompleted()
-                })
+                                    return
+                            }
+
+                            strongSelf.usersNode.child(user.uid)
+                                .updateChildValues(["name": user.name,
+                                                    "email": user.email,
+                                                    "avatar_url": downloadURL.absoluteString],
+                                                   withCompletionBlock: { error, reference in
+                                                    if let error = error {
+                                                        observer.onError(error)
+                                                        return
+                                                    }
+                                                    observer.onNext(true)
+                                                    observer.onCompleted()
+                                })
+                    })
+            } else {
+                strongSelf.usersNode.child(user.uid)
+                    .updateChildValues(["name": user.name,
+                                        "email": user.email],
+                                       withCompletionBlock: { error, ref in
+                                        if let error = error {
+                                            observer.onError(error)
+                                            return
+                                        }
+                                        observer.onNext(true)
+                                        observer.onCompleted()
+                    })
+            }
+            return Disposables.create()
+        }
+    }
+
+    func removeUserAvatar(uid: String) -> Observable<Bool> {
+        return Observable.create { [weak self] observer in
+            guard let strongSelf = self else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+
+            strongSelf.usersNode.child(uid).child("avatar_url")
+                .removeValue(completionBlock: { error, ref in
+                    if let error = error {
+                        observer.onError(error)
+                        return
+                    }
+                    FIRStorage.storage().reference().child(uid + "-avatar.png")
+                        .delete(completion: { error in
+                            if let error = error {
+                                observer.onError(error)
+                                return
+                            }
+                            observer.onNext(true)
+                            observer.onCompleted()
+                    })
+
+            })
             return Disposables.create()
         }
     }
@@ -83,7 +139,13 @@ class DatabaseManager {
                         return
                 }
 
-                let user = User(uid: uid, name: username, email: email)
+                var avatarURL: URL?
+
+                if let avatarURLString = dict["avatar_url"] as? String {
+                    avatarURL = URL(string: avatarURLString)
+                }
+
+                let user = User(uid: uid, name: username, email: email, avatar_url: avatarURL)
 
                 observer.onNext(user)
             }, withCancel: { error in
@@ -108,7 +170,13 @@ class DatabaseManager {
                         return
                 }
 
-                let user = User(uid: uid, name: username, email: email)
+                var avatarURL: URL?
+
+                if let avatarURLString = dict["avatar_url"] as? String {
+                    avatarURL = URL(string: avatarURLString)
+                }
+
+                let user = User(uid: uid, name: username, email: email, avatar_url: avatarURL)
 
                 observer.onNext(user)
             }, withCancel: { error in
@@ -134,7 +202,13 @@ class DatabaseManager {
                 }
 
                 let uid = snapshot.key
-                let user = User(uid: uid, name: username, email: email)
+                var avatarURL: URL?
+
+                if let avatarURLString = dict["avatar_url"] as? String {
+                    avatarURL = URL(string: avatarURLString)
+                }
+
+                let user = User(uid: uid, name: username, email: email, avatar_url: avatarURL)
 
                 observer.onNext(user)
             }, withCancel: { error in

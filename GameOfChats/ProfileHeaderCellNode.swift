@@ -40,8 +40,7 @@ class ProfileHeaderCellNode: ASCellNode {
     var onAvatarTap: (() -> ())?
     private var keyboardController: KeyboardController!
 
-    // FIXME: Remove temporary mock
-    init(user: User = User.init(uid: "", name: "", email: "")) {
+    init(user: User = User(uid: "", name: "", email: "")) {
         self.user = user
         super.init()
         automaticallyManagesSubnodes = true
@@ -49,6 +48,8 @@ class ProfileHeaderCellNode: ASCellNode {
         nameNode = ASDisplayNode(viewBlock: { [unowned self] in self.nameTextField })
         if let avatarURL = user.avatar_url {
             avatarImageNode.url = avatarURL
+        } else if let localAvatar = user.localImage {
+            avatarImageNode.image = localAvatar
         } else {
             avatarImageNode.image = #imageLiteral(resourceName: "default_avatar")
         }
@@ -68,7 +69,7 @@ class ProfileHeaderCellNode: ASCellNode {
             )
         )
         _ = nameTextField.rx.text.asObservable()
-            .throttle(2, scheduler: MainScheduler.instance)
+//            .throttle(2, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] value in
                 guard let value = value,
                     !value.isEmpty,
@@ -106,6 +107,7 @@ class ProfileHeaderCellNode: ASCellNode {
     }
 
     @objc private func avatarTapHandler() {
+        view.endEditing(false)
         avatarImageNode.animateTap(completion: onAvatarTap)
     }
 }

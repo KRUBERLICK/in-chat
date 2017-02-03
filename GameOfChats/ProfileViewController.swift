@@ -12,7 +12,7 @@ import Firebase
 
 class ProfileViewController: ASViewController<ASDisplayNode> {
     private var disposeBag = DisposeBag()
-    private let tableNode = ASTableNode(style: .plain)
+    fileprivate let tableNode = ASTableNode(style: .plain)
     fileprivate var user: User!
 
     init() {
@@ -42,11 +42,21 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        guard (presentedViewController as? UIImagePickerController) == nil else {
+            return
+        }
+
         setupUserInfoObserver()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+
+        guard (presentedViewController as? UIImagePickerController) == nil else {
+            return
+        }
+
         view.endEditing(false)
         disposeBag = DisposeBag()
     }
@@ -142,14 +152,36 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
         let chooseFromGalleryAction = UIAlertAction(
             title: NSLocalizedString("choose_from_gallery", comment: ""),
             style: .default,
-            handler: { _ in
+            handler: { [unowned self] _ in
+                let imagePicker = UIImagePickerController()
 
+                imagePicker.delegate = self
+                imagePicker.allowsEditing = true
+                self.present(imagePicker, animated: true, completion: nil)
         })
         let removeAvatarAction = UIAlertAction(
             title: NSLocalizedString("remove_avatar", comment: ""),
             style: .destructive,
-            handler: { _ in
+            handler: { [unowned self] _ in
+                _ = DatabaseManager.shared.removeUserAvatar(uid: self.user.uid)
+                    .subscribe(onError: { [weak self] error in
+                        guard let strongSelf = self else {
+                            return
+                        }
 
+                        strongSelf.showAlert(title: NSLocalizedString("error", comment: ""),
+                                             message: NSLocalizedString("unknown_error", comment: ""))
+                        }, onCompleted: { [weak self] in
+                            guard let strongSelf = self else {
+                                return
+                            }
+
+                            strongSelf.user.localImage = nil
+                            strongSelf.user.avatar_url = nil
+                            DispatchQueue.main.async {
+                                strongSelf.tableNode.reloadSections(IndexSet(integer: 0), with: .fade)
+                            }
+                    })
         })
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("cancel", comment: ""),
@@ -198,6 +230,12 @@ extension ProfileViewController: ASTableDelegate, ASTableDataSource {
                                 title: NSLocalizedString("error", comment: ""),
                                 message: NSLocalizedString("unknown_error", comment: "")
                             )
+                            }, onCompleted: { [weak self] in
+                                guard let strongSelf = self else {
+                                    return
+                                }
+
+                                strongSelf.user = user
                         })
                 }
                 cellNode.onAvatarTap = { [weak self] in
@@ -242,5 +280,38 @@ extension ProfileViewController: ASTableDelegate, ASTableDataSource {
         default:
             return ASSizeRangeMake(.zero)
         }
+    }
+}
+
+extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [String : Any]) {
+        var selectedImage: UIImage?
+
+        if let editedImage = info["UIImagePickerControllerEditedImage"]
+            as? UIImage {
+            selectedImage = editedImage
+        }
+        else if let originalImage = info["UIImagePickerControllerOriginalImage"]
+            as? UIImage {
+            selectedImage = originalImage
+        }
+        user.avatar_url = nil
+        user.localImage = selectedImage
+        tableNode.reloadSections(IndexSet(integer: 0), with: .fade)
+
+        _ = DatabaseManager.shared.updateUser(user)
+            .subscribe(onError: { [weak self] error in
+                guard let strongSelf = self else {
+                    return
+                }
+
+                strongSelf.showAlert(
+                    title: NSLocalizedString("error", comment: ""),
+                    message: NSLocalizedString("unknown_error", comment: "")
+                )
+            })
+        
+        picker.dismiss(animated: true, completion: nil)
     }
 }
