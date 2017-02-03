@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  InChat
+
+  Created by Daniel Ilchishyn on 2/3/17.
+  Copyright © 2017 KRUBERLICK. All rights reserved.
+*/
+
+"NSPhotoLibraryUsageDescription" = "Enable for adding an avatar image from photo gallery";

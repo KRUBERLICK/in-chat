@@ -18,6 +18,7 @@
 		5B2785071E43A919009F618B /* ProfileHeaderCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2785061E43A919009F618B /* ProfileHeaderCellNode.swift */; };
 		5B3BB9631E423FD3009FB91B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5B3BB9621E423FD3009FB91B /* GoogleService-Info.plist */; };
 		5B5207501E448DD600CBF4AB /* ProfileEmailCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B52074F1E448DD600CBF4AB /* ProfileEmailCellNode.swift */; };
+		5B756F901E44D28F00CC49A0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5B756F921E44D28F00CC49A0 /* InfoPlist.strings */; };
 		5B9E320D1E4243DF007C4AD3 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9E320C1E4243DF007C4AD3 /* DatabaseManager.swift */; };
 		5B9E32101E425114007C4AD3 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9E320F1E425114007C4AD3 /* AuthManager.swift */; };
 		5BB0D29E1E4100B7000A1672 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB0D29D1E4100B7000A1672 /* AppDelegate.swift */; };
@@ -47,6 +48,9 @@
 		5B2785061E43A919009F618B /* ProfileHeaderCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileHeaderCellNode.swift; sourceTree = "<group>"; };
 		5B3BB9621E423FD3009FB91B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5B52074F1E448DD600CBF4AB /* ProfileEmailCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileEmailCellNode.swift; sourceTree = "<group>"; };
+		5B756F911E44D28F00CC49A0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5B756F931E44D29200CC49A0 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5B756F941E44D29300CC49A0 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5B9E320C1E4243DF007C4AD3 /* DatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		5B9E320F1E425114007C4AD3 /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		5BB0D29A1E4100B7000A1672 /* InChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -178,6 +182,7 @@
 				5BB0D2A61E4100B7000A1672 /* LaunchScreen.storyboard */,
 				5BB0D2A91E4100B7000A1672 /* Info.plist */,
 				5B3BB9621E423FD3009FB91B /* GoogleService-Info.plist */,
+				5B756F921E44D28F00CC49A0 /* InfoPlist.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -270,6 +275,7 @@
 				5B3BB9631E423FD3009FB91B /* GoogleService-Info.plist in Resources */,
 				5B075AD91E41133A00A702BC /* Localizable.strings in Resources */,
 				5BB0D2A51E4100B7000A1672 /* Assets.xcassets in Resources */,
+				5B756F901E44D28F00CC49A0 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,6 +365,16 @@
 				5B075AE01E4114D800A702BC /* uk */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		5B756F921E44D28F00CC49A0 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5B756F911E44D28F00CC49A0 /* en */,
+				5B756F931E44D29200CC49A0 /* ru */,
+				5B756F941E44D29300CC49A0 /* uk */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 		5BB0D2A61E4100B7000A1672 /* LaunchScreen.storyboard */ = {
