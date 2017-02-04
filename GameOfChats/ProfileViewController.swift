@@ -138,6 +138,12 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
     }
 
     fileprivate func showAvatarPickMenu() {
+        guard case .reachable(_) = ReachabilityProvider.shared.reachabilityStatus.value else {
+            showAlert(title: NSLocalizedString("error", comment: ""),
+                      message: NSLocalizedString("network_error", comment: ""))
+            return
+        }
+
         let alertController = UIAlertController(
             title: NSLocalizedString("change_avatar", comment: ""),
             message: nil,

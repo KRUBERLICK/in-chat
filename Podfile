@@ -11,4 +11,5 @@ target 'InChat' do
     pod 'Firebase/Auth'
     pod 'Firebase/Storage'
     pod 'ObjectMapper'
+    pod 'Alamofire'
 end

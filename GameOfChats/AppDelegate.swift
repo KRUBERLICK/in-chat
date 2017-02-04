@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions
         launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FIRApp.configure()
+
+        _ = ReachabilityProvider.shared
+
         window = UIWindow(frame: UIScreen.main.bounds)
         if let _ = FIRAuth.auth()?.currentUser?.uid {
             window?.rootViewController = BaseNavigationController(
