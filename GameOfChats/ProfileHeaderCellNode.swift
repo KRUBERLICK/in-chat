@@ -116,6 +116,6 @@ class ProfileHeaderCellNode: ASCellNode {
 
     @objc private func avatarTapHandler() {
         view.endEditing(false)
-        avatarImageNode.animateTap(completion: onAvatarTap)
+        avatarImageNode.animatePush(completion: onAvatarTap)
     }
 }

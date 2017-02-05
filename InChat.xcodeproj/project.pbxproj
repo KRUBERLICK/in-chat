@@ -25,7 +25,7 @@
 		5BB0D2A01E4100B7000A1672 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB0D29F1E4100B7000A1672 /* LoginViewController.swift */; };
 		5BB0D2A51E4100B7000A1672 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BB0D2A41E4100B7000A1672 /* Assets.xcassets */; };
 		5BB0D2A81E4100B7000A1672 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BB0D2A61E4100B7000A1672 /* LaunchScreen.storyboard */; };
-		5BB380E91E433B8F00E1F315 /* PushButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB380E81E433B8F00E1F315 /* PushButtonNode.swift */; };
+		5BB380E91E433B8F00E1F315 /* ASDisplayNode+PushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB380E81E433B8F00E1F315 /* ASDisplayNode+PushAnimation.swift */; };
 		5BB380EC1E43403A00E1F315 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB380EB1E43403A00E1F315 /* User.swift */; };
 		5BB380EE1E43448100E1F315 /* NewMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB380ED1E43448100E1F315 /* NewMessageViewController.swift */; };
 		5BB380F01E4348B900E1F315 /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB380EF1E4348B900E1F315 /* BaseNavigationController.swift */; };
@@ -59,7 +59,7 @@
 		5BB0D2A41E4100B7000A1672 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5BB0D2A71E4100B7000A1672 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5BB0D2A91E4100B7000A1672 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5BB380E81E433B8F00E1F315 /* PushButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushButtonNode.swift; sourceTree = "<group>"; };
+		5BB380E81E433B8F00E1F315 /* ASDisplayNode+PushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ASDisplayNode+PushAnimation.swift"; sourceTree = "<group>"; };
 		5BB380EB1E43403A00E1F315 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5BB380ED1E43448100E1F315 /* NewMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageViewController.swift; sourceTree = "<group>"; };
 		5BB380EF1E4348B900E1F315 /* BaseNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 			children = (
 				5B075AD41E41108600A702BC /* LoginNode.swift */,
 				5B1A3CF01E41E65D003CE5A4 /* BaseDisplayNode.swift */,
-				5BB380E81E433B8F00E1F315 /* PushButtonNode.swift */,
+				5BB380E81E433B8F00E1F315 /* ASDisplayNode+PushAnimation.swift */,
 				5BB380F11E4350EE00E1F315 /* UserCellNode.swift */,
 				5B2785061E43A919009F618B /* ProfileHeaderCellNode.swift */,
 				5B52074F1E448DD600CBF4AB /* ProfileEmailCellNode.swift */,
@@ -335,7 +335,7 @@
 				5BB380F01E4348B900E1F315 /* BaseNavigationController.swift in Sources */,
 				5B9E320D1E4243DF007C4AD3 /* DatabaseManager.swift in Sources */,
 				5B5207501E448DD600CBF4AB /* ProfileEmailCellNode.swift in Sources */,
-				5BB380E91E433B8F00E1F315 /* PushButtonNode.swift in Sources */,
+				5BB380E91E433B8F00E1F315 /* ASDisplayNode+PushAnimation.swift in Sources */,
 				5B9E32101E425114007C4AD3 /* AuthManager.swift in Sources */,
 				5B075ACF1E41049500A702BC /* LastMessagesViewController.swift in Sources */,
 				5B2785071E43A919009F618B /* ProfileHeaderCellNode.swift in Sources */,

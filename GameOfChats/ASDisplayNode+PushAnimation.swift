@@ -9,7 +9,7 @@
 import AsyncDisplayKit
 
 extension ASDisplayNode {
-    func animateTap(completion: (() -> ())? = nil) {
+    func animatePush(completion: (() -> ())? = nil) {
         UIView.animate(withDuration: 0.1, animations: {
             self.view.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         }, completion: { _ in
@@ -26,20 +26,5 @@ extension ASDisplayNode {
                 completion?()
             })
         })
-    }
-}
-
-class PushButtonNode: ASButtonNode {
-    var targetCallback: (() -> ())?
-
-    override func didLoad() {
-        super.didLoad()
-        addTarget(self,
-                  action: #selector(PushButtonNode.tapHandler),
-                  forControlEvents: .touchUpInside)
-    }
-
-    @objc private func tapHandler() {
-        animateTap(completion: targetCallback)
     }
 }

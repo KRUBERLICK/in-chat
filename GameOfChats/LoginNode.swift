@@ -130,8 +130,8 @@ class LoginNode: BaseDisplayNode {
     private var passwordNode: ASDisplayNode!
     private var passwordConfirmNode: ASDisplayNode!
 
-    private lazy var mainButtonNode: PushButtonNode = {
-        let buttonNode = PushButtonNode()
+    private lazy var mainButtonNode: ASButtonNode = {
+        let buttonNode = ASButtonNode()
         let titleAttribs = [NSForegroundColorAttributeName: UIColor.white,
                             NSFontAttributeName: UIFont.systemFont(ofSize: 30)]
 
@@ -143,7 +143,11 @@ class LoginNode: BaseDisplayNode {
             attributes: titleAttribs),
                                       for: [])
         buttonNode.cornerRadius = 5
-        buttonNode.targetCallback = { [unowned self] in self.publishUserInput() }
+        buttonNode.addTarget(
+            self,
+            action: #selector(LoginNode.mainButtonNodeTapped),
+            forControlEvents: .touchUpInside
+        )
         return buttonNode
     }()
 
@@ -329,6 +333,12 @@ class LoginNode: BaseDisplayNode {
             mode = .register
         } else {
             mode = .login
+        }
+    }
+
+    @objc private func mainButtonNodeTapped() {
+        mainButtonNode.animatePush { [unowned self] in
+            self.publishUserInput()
         }
     }
 
