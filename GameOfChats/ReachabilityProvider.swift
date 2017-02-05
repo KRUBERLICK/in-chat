@@ -6,24 +6,25 @@
 //  Copyright © 2017 KRUBERLICK. All rights reserved.
 //
 
-import ReachabilitySwift
+import Firebase
 import RxSwift
 
 class ReachabilityProvider {
-    private let reachabilityManager = Reachability()
-    var reachabilityStatus = Variable<Bool>(false)
+    private let connectedReference = FIRDatabase.database()
+        .reference(withPath: ".info/connected")
+    var firebaseReachabilityStatus = Variable<Bool>(false)
 
     static var shared: ReachabilityProvider = {
         return ReachabilityProvider()
     }()
 
     fileprivate init() {
-        reachabilityManager?.whenReachable = { [unowned self] _ in
-            self.reachabilityStatus.value = true
-        }
-        reachabilityManager?.whenUnreachable = { [unowned self] _ in
-            self.reachabilityStatus.value = false
-        }
-        try? reachabilityManager?.startNotifier()
+        connectedReference.observe(.value, with: { [unowned self] snapshot in
+            if let connected = snapshot.value as? Bool, connected {
+                self.firebaseReachabilityStatus.value = true
+            } else {
+                self.firebaseReachabilityStatus.value = false
+            }
+        })
     }
 }

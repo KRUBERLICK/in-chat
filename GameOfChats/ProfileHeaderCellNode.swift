@@ -17,7 +17,7 @@ extension ProfileHeaderCellNode: UITextFieldDelegate {
     }
 
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        guard ReachabilityProvider.shared.reachabilityStatus.value else {
+        guard ReachabilityProvider.shared.firebaseReachabilityStatus.value else {
             return false
         }
 

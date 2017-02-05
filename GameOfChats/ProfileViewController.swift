@@ -138,7 +138,7 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
     }
 
     fileprivate func showAvatarPickMenu() {
-        guard ReachabilityProvider.shared.reachabilityStatus.value else {
+        guard ReachabilityProvider.shared.firebaseReachabilityStatus.value else {
             showAlert(title: NSLocalizedString("error", comment: ""),
                       message: NSLocalizedString("network_error", comment: ""))
             return
