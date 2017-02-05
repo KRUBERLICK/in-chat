@@ -15,6 +15,14 @@ extension ProfileHeaderCellNode: UITextFieldDelegate {
         hideKeyboard()
         return true
     }
+
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        guard ReachabilityProvider.shared.reachabilityStatus.value else {
+            return false
+        }
+
+        return true
+    }
 }
 
 class ProfileHeaderCellNode: ASCellNode {

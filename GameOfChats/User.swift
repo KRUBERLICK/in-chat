@@ -6,8 +6,7 @@
 //  Copyright © 2017 KRUBERLICK. All rights reserved.
 //
 
-import Foundation
-import ObjectMapper
+import UIKit
 
 struct User {
     var uid: String
