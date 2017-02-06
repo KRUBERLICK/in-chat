@@ -26,6 +26,7 @@ class UserCellNode: ASCellNode {
         let userEmailTextAttribs: [String: Any] = [NSForegroundColorAttributeName: UIColor.darkText,
                                                   NSFontAttributeName: UIFont.systemFont(ofSize: 15)]
 
+        avatarImageNode.backgroundColor = .disabledText
         if let avatarURL = user.avatar_url {
             avatarImageNode.url = avatarURL
         } else {
@@ -39,7 +40,7 @@ class UserCellNode: ASCellNode {
         userEmailNode.maximumNumberOfLines = 1
         usernameNode.truncationMode = .byTruncatingTail
         userEmailNode.truncationMode = .byTruncatingTail
-        bottomLineNode.backgroundColor = UIColor(hexString: "000000", alpha: 0.1)
+        bottomLineNode.backgroundColor = .separatorColor
     }
 
     override func didLoad() {

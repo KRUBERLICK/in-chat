@@ -12,6 +12,9 @@
 		5B075AD31E41071A00A702BC /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B075AD21E41071A00A702BC /* Utils.swift */; };
 		5B075AD51E41108600A702BC /* LoginNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B075AD41E41108600A702BC /* LoginNode.swift */; };
 		5B075AD91E41133A00A702BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5B075ADB1E41133A00A702BC /* Localizable.strings */; };
+		5B130EF31E48868900BBC9C7 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B130EF21E48868900BBC9C7 /* ChatViewController.swift */; };
+		5B130EF51E4888CB00BBC9C7 /* ChatNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B130EF41E4888CB00BBC9C7 /* ChatNode.swift */; };
+		5B130EF71E4891DA00BBC9C7 /* InputContainerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B130EF61E4891DA00BBC9C7 /* InputContainerNode.swift */; };
 		5B1A3CF11E41E65D003CE5A4 /* BaseDisplayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1A3CF01E41E65D003CE5A4 /* BaseDisplayNode.swift */; };
 		5B1A3CF31E4225D3003CE5A4 /* KeyboardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1A3CF21E4225D3003CE5A4 /* KeyboardController.swift */; };
 		5B2785051E438F28009F618B /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2785041E438F28009F618B /* ProfileViewController.swift */; };
@@ -42,6 +45,9 @@
 		5B075ADA1E41133A00A702BC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5B075ADF1E4114CF00A702BC /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5B075AE01E4114D800A702BC /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5B130EF21E48868900BBC9C7 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		5B130EF41E4888CB00BBC9C7 /* ChatNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatNode.swift; sourceTree = "<group>"; };
+		5B130EF61E4891DA00BBC9C7 /* InputContainerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputContainerNode.swift; sourceTree = "<group>"; };
 		5B1A3CF01E41E65D003CE5A4 /* BaseDisplayNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseDisplayNode.swift; sourceTree = "<group>"; };
 		5B1A3CF21E4225D3003CE5A4 /* KeyboardController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardController.swift; sourceTree = "<group>"; };
 		5B2785041E438F28009F618B /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -96,6 +102,7 @@
 				5BB380ED1E43448100E1F315 /* NewMessageViewController.swift */,
 				5BB380EF1E4348B900E1F315 /* BaseNavigationController.swift */,
 				5B2785041E438F28009F618B /* ProfileViewController.swift */,
+				5B130EF21E48868900BBC9C7 /* ChatViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -116,10 +123,28 @@
 				5B1A3CF01E41E65D003CE5A4 /* BaseDisplayNode.swift */,
 				5BB380E81E433B8F00E1F315 /* ASDisplayNode+PushAnimation.swift */,
 				5BB380F11E4350EE00E1F315 /* UserCellNode.swift */,
+				5B130EF91E4891FC00BBC9C7 /* Profile */,
+				5B130EF81E4891F100BBC9C7 /* Chat */,
+			);
+			name = Nodes;
+			sourceTree = "<group>";
+		};
+		5B130EF81E4891F100BBC9C7 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				5B130EF41E4888CB00BBC9C7 /* ChatNode.swift */,
+				5B130EF61E4891DA00BBC9C7 /* InputContainerNode.swift */,
+			);
+			name = Chat;
+			sourceTree = "<group>";
+		};
+		5B130EF91E4891FC00BBC9C7 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
 				5B2785061E43A919009F618B /* ProfileHeaderCellNode.swift */,
 				5B52074F1E448DD600CBF4AB /* ProfileEmailCellNode.swift */,
 			);
-			name = Nodes;
+			name = Profile;
 			sourceTree = "<group>";
 		};
 		5B9E320E1E424994007C4AD3 /* API */ = {
@@ -335,6 +360,7 @@
 				5BB380F01E4348B900E1F315 /* BaseNavigationController.swift in Sources */,
 				5B9E320D1E4243DF007C4AD3 /* DatabaseManager.swift in Sources */,
 				5B5207501E448DD600CBF4AB /* ProfileEmailCellNode.swift in Sources */,
+				5B130EF71E4891DA00BBC9C7 /* InputContainerNode.swift in Sources */,
 				5BB380E91E433B8F00E1F315 /* ASDisplayNode+PushAnimation.swift in Sources */,
 				5B9E32101E425114007C4AD3 /* AuthManager.swift in Sources */,
 				5B075ACF1E41049500A702BC /* LastMessagesViewController.swift in Sources */,
@@ -342,9 +368,11 @@
 				5B075AD31E41071A00A702BC /* Utils.swift in Sources */,
 				5BD549A01E4671B00094A2E8 /* ReachabilityProvider.swift in Sources */,
 				5BB0D2A01E4100B7000A1672 /* LoginViewController.swift in Sources */,
+				5B130EF31E48868900BBC9C7 /* ChatViewController.swift in Sources */,
 				5B1A3CF11E41E65D003CE5A4 /* BaseDisplayNode.swift in Sources */,
 				5BB380EE1E43448100E1F315 /* NewMessageViewController.swift in Sources */,
 				5B075AD51E41108600A702BC /* LoginNode.swift in Sources */,
+				5B130EF51E4888CB00BBC9C7 /* ChatNode.swift in Sources */,
 				5BB0D29E1E4100B7000A1672 /* AppDelegate.swift in Sources */,
 				5B2785051E438F28009F618B /* ProfileViewController.swift in Sources */,
 				5B1A3CF31E4225D3003CE5A4 /* KeyboardController.swift in Sources */,

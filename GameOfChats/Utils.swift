@@ -47,6 +47,7 @@ extension UIColor {
     @nonobjc static var loginButtonBackground = UIColor(hexString: "FFC800")
     @nonobjc static var loginBackgroundGradientTop = UIColor(hexString: "00C6FF")
     @nonobjc static var loginBackgroundGradientBottom = UIColor(hexString: "00CFC4")
+    @nonobjc static var separatorColor = UIColor(hexString: "DBDBDB")
 }
 
 extension UIViewController {

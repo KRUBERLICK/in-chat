@@ -28,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             window?.rootViewController = LoginViewController()
         }
+        window?.rootViewController = BaseNavigationController(rootViewController: ChatViewController())
         window?.makeKeyAndVisible()
         return true
     }
