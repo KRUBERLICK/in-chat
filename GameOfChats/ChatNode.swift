@@ -21,13 +21,11 @@ class ChatNode: ASDisplayNode {
         return collectionNode
     }()
 
-    private lazy var inputContainerNode: InputContainerNode = {
+    private(set) lazy var inputContainerNode: InputContainerNode = {
         let node = InputContainerNode()
 
         node.onSendTap = { [unowned self] message in
-            self.keyboardController.hideKeyboard {
-                self.onMessageSend?(message)
-            }
+            self.onMessageSend?(message)
         }
         return node
     }()
@@ -39,20 +37,9 @@ class ChatNode: ASDisplayNode {
         return node
     }()
 
-    private var keyboardController: KeyboardController!
-
     override init() {
         super.init()
         automaticallyManagesSubnodes = true
-    }
-
-    override func didLoad() {
-        super.didLoad()
-        keyboardController = KeyboardController(view: view)
-        collectionNode.view.addGestureRecognizer(
-            UITapGestureRecognizer(target: self,
-                                   action: #selector(ChatNode.hideKeyboard))
-        )
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -67,9 +54,5 @@ class ChatNode: ASDisplayNode {
             alignItems: .stretch,
             children: [collectionNode, separatorNode,  inputContainerNode]
         )
-    }
-
-    @objc private func hideKeyboard() {
-        keyboardController.hideKeyboard()
     }
 }

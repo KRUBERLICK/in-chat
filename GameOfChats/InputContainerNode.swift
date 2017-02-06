@@ -15,7 +15,7 @@ class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
     var onSendTap: ((String) -> ())?
     private let disposeBag = DisposeBag()
 
-    private lazy var textField: UITextField = {
+    private(set) lazy var textField: UITextField = {
         let textField = UITextField()
 
         textField.defaultTextAttributes = [NSForegroundColorAttributeName: UIColor.darkText,
@@ -36,7 +36,7 @@ class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
         return textField
     }()
 
-    private lazy var sendButtonNode: ASButtonNode = {
+    private(set) lazy var sendButtonNode: ASButtonNode = {
         let buttonNode = ASButtonNode()
         let activeColor = UIColor.navigationBarBackground
         let inactiveColor = UIColor(white: 0, alpha: 0.2)
@@ -89,8 +89,6 @@ class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
 
     @objc private func sendButtonTapped() {
         onSendTap?(textField.text ?? "")
-        textField.text = ""
-        sendButtonNode.isEnabled = false
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

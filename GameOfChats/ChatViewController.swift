@@ -10,11 +10,14 @@ import AsyncDisplayKit
 
 class ChatViewController: ASViewController<ASDisplayNode> {
     private let chatNode = ChatNode()
+    private var keyboardController: KeyboardController!
 
     init() {
         super.init(node: chatNode)
         chatNode.onMessageSend = { [unowned self] message in
-            self.sendMessage(message)
+            self.keyboardController.hideKeyboard {
+                self.sendMessage(message)
+            }
         }
     }
     
@@ -22,7 +25,34 @@ class ChatViewController: ASViewController<ASDisplayNode> {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.title = "Chat"
+        keyboardController = KeyboardController(view: view)
+        chatNode.collectionNode.view.addGestureRecognizer(
+            UITapGestureRecognizer(
+                target: self,
+                action: #selector(ChatViewController.hideKeyboard)))
+    }
+
     private func sendMessage(_ message: String) {
+        guard ReachabilityProvider.shared.firebaseReachabilityStatus.value else {
+            showAlert(title: NSLocalizedString("error", comment: ""),
+                      message: NSLocalizedString("network_error", comment: ""))
+            return
+        }
+
+        chatNode.inputContainerNode.textField.text = ""
+        chatNode.inputContainerNode.sendButtonNode.isEnabled = false
+
         // TODO: Send message
+    }
+
+    override var prefersStatusBarHidden: Bool {
+        return false
+    }
+
+    @objc private func hideKeyboard() {
+        keyboardController.hideKeyboard()
     }
 }
