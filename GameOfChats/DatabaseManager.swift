@@ -21,6 +21,10 @@ class DatabaseManager {
         return ref.child("users")
     }
 
+    private var messagesNode: FIRDatabaseReference {
+        return ref.child("messages")
+    }
+
     fileprivate init() {}
 
     func addUser(uid: String, username: String, email: String) -> Observable<Bool> {
@@ -211,6 +215,65 @@ class DatabaseManager {
                 let user = User(uid: uid, name: username, email: email, avatar_url: avatarURL)
 
                 observer.onNext(user)
+            }, withCancel: { error in
+                observer.onError(error)
+            })
+            return Disposables.create()
+        }
+    }
+
+    func addMessage(messageText: String,
+                    recepientId: String) -> Observable<Bool> {
+        return Observable.create { [weak self] observer in
+            guard let strongSelf = self else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+
+            let newMessageNode = strongSelf.messagesNode.childByAutoId()
+
+            newMessageNode.updateChildValues(
+                ["text": messageText,
+                 "fromId": FIRAuth.auth()!.currentUser!.uid,
+                 "toId": recepientId,
+                 "timestamp": Date().timeIntervalSince1970], // cast to Int?
+                withCompletionBlock: { error, ref in
+                    if let error = error {
+                        observer.onError(error)
+                        observer.onCompleted()
+                    }
+                    observer.onNext(true)
+                    observer.onCompleted()
+            })
+            return Disposables.create()
+        }
+    }
+
+    func getMessagesList() -> Observable<Message> {
+        return Observable.create { [weak self] observer in
+            guard let strongSelf = self else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+
+            strongSelf.messagesNode.observe(.childAdded, with: { snapshot in
+                guard let dict = snapshot.value as? [String: AnyObject],
+                    let messageText = dict["text"] as? String,
+                    let fromId = dict["fromId"] as? String,
+                    let toId = dict["toId"] as? String,
+                    let timestamp = dict["timestamp"] as? TimeInterval else {
+                        observer.onError(NSError())
+                        return
+                }
+
+                let messageId = snapshot.key
+                let message = Message(id: messageId,
+                                      text: messageText,
+                                      fromId: fromId,
+                                      toId: toId,
+                                      timestamp: timestamp)
+
+                observer.onNext(message)
             }, withCancel: { error in
                 observer.onError(error)
             })

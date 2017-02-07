@@ -7,13 +7,17 @@
 //
 
 import AsyncDisplayKit
+import RxSwift
 
 class ChatViewController: ASViewController<ASDisplayNode> {
     private let chatNode = ChatNode()
     private var keyboardController: KeyboardController!
+    private let companion: User
 
-    init() {
+    init(companion: User) {
+        self.companion = companion
         super.init(node: chatNode)
+        navigationItem.title = companion.name
         chatNode.onMessageSend = { [unowned self] message in
             self.keyboardController.hideKeyboard {
                 self.sendMessage(message)
@@ -27,7 +31,6 @@ class ChatViewController: ASViewController<ASDisplayNode> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Chat"
         keyboardController = KeyboardController(view: view)
         chatNode.collectionNode.view.addGestureRecognizer(
             UITapGestureRecognizer(
@@ -45,7 +48,18 @@ class ChatViewController: ASViewController<ASDisplayNode> {
         chatNode.inputContainerNode.textField.text = ""
         chatNode.inputContainerNode.sendButtonNode.isEnabled = false
 
-        // TODO: Send message
+        _ = DatabaseManager.shared.addMessage(messageText: message,
+                                              recepientId: companion.uid)
+            .observeOn(MainScheduler.instance)
+            .subscribe(onError: { [weak self] error in
+                guard let strongSelf = self else {
+                    return
+                }
+
+                strongSelf.showAlert(
+                    title: NSLocalizedString("error", comment: ""),
+                    message: NSLocalizedString("unknown_error", comment: ""))
+            })
     }
 
     override var prefersStatusBarHidden: Bool {

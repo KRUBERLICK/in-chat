@@ -18,6 +18,7 @@ class ChatNode: ASDisplayNode {
             collectionViewLayout: UICollectionViewFlowLayout()
         )
 
+        collectionNode.backgroundColor = .lightBackground
         return collectionNode
     }()
 

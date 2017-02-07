@@ -55,6 +55,12 @@ class NewMessageViewController: ASViewController<ASDisplayNode> {
         disposeBag = DisposeBag()
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        users = []
+        tableNode.reloadData()
+    }
+
     @objc private func fetchUsers() {
         DatabaseManager.shared.getUsersList()
             .observeOn(MainScheduler.instance)
@@ -105,7 +111,21 @@ extension NewMessageViewController: ASTableDataSource, ASTableDelegate {
         return {
             let cellNode = UserCellNode(user: user)
 
-            //TODO: Setup cell tap callback
+            cellNode.onTap = { [weak self] user in
+                guard let strongSelf = self,
+                    let navController = strongSelf.navigationController else {
+                        return
+                }
+
+                navController.pushViewController(
+                    ChatViewController(companion: user),
+                    animated: true
+                )
+
+                navController.viewControllers.remove(
+                    at: navController.viewControllers.count - 2
+                )
+            }
 
             return cellNode
         }

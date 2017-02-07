@@ -26,7 +26,7 @@ class UserCellNode: ASCellNode {
         let userEmailTextAttribs: [String: Any] = [NSForegroundColorAttributeName: UIColor.darkText,
                                                   NSFontAttributeName: UIFont.systemFont(ofSize: 15)]
 
-        avatarImageNode.backgroundColor = .disabledText
+        avatarImageNode.backgroundColor = .separatorColor
         if let avatarURL = user.avatar_url {
             avatarImageNode.url = avatarURL
         } else {
@@ -93,21 +93,8 @@ class UserCellNode: ASCellNode {
     }
 
     @objc private func tapHandler() {
-        UIView.animate(withDuration: 0.1, animations: {
-            self.view.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-        }, completion: { _ in
-            UIView.animate(withDuration: 0.3,
-                           delay: 0,
-                           usingSpringWithDamping: 0.5,
-                           initialSpringVelocity: 0.5,
-                           options: [],
-                           animations: {
-                            self.view.transform = CGAffineTransform(
-                                scaleX: 1, y: 1
-                            )
-            }, completion: { _ in
-                self.onTap?(self.user)
-            })
-        })
+        animatePush { [unowned self] in
+            self.onTap?(self.user)
+        }
     }
 }
