@@ -38,6 +38,11 @@ class ChatViewController: ASViewController<ASDisplayNode> {
                 action: #selector(ChatViewController.hideKeyboard)))
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        view.endEditing(false)
+    }
+
     private func sendMessage(_ message: String) {
         guard ReachabilityProvider.shared.firebaseReachabilityStatus.value else {
             showAlert(title: NSLocalizedString("error", comment: ""),

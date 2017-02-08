@@ -8,7 +8,7 @@
 
 import AsyncDisplayKit
 
-class MessageCellNode: ASCellNode {
+class LastMessageCellNode: ASCellNode {
     private let messageTextNode: ASTextNode = {
         let node = ASTextNode()
 
@@ -67,7 +67,7 @@ class MessageCellNode: ASCellNode {
         super.didLoad()
         view.addGestureRecognizer(
             UITapGestureRecognizer(target: self,
-                                   action: #selector(MessageCellNode.tapHandler))
+                                   action: #selector(LastMessageCellNode.tapHandler))
         )
     }
 
@@ -78,7 +78,7 @@ class MessageCellNode: ASCellNode {
     }
 
     private func bindData() {
-        _ = DatabaseManager.shared.getUserInfo(uid: message.fromId)
+        _ = DatabaseManager.shared.getUserInfo(uid: message.toId)
             .subscribe(onNext: { [weak self] user in
                 guard let strongSelf = self else {
                     return

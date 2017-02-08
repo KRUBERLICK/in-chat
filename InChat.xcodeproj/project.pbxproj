@@ -19,7 +19,7 @@
 		5B1A3CF31E4225D3003CE5A4 /* KeyboardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1A3CF21E4225D3003CE5A4 /* KeyboardController.swift */; };
 		5B2785051E438F28009F618B /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2785041E438F28009F618B /* ProfileViewController.swift */; };
 		5B2785071E43A919009F618B /* ProfileHeaderCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2785061E43A919009F618B /* ProfileHeaderCellNode.swift */; };
-		5B37D6AD1E4A283700BEE948 /* MessageCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B37D6AC1E4A283700BEE948 /* MessageCellNode.swift */; };
+		5B37D6AD1E4A283700BEE948 /* LastMessageCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B37D6AC1E4A283700BEE948 /* LastMessageCellNode.swift */; };
 		5B3BB9631E423FD3009FB91B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5B3BB9621E423FD3009FB91B /* GoogleService-Info.plist */; };
 		5B5207501E448DD600CBF4AB /* ProfileEmailCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B52074F1E448DD600CBF4AB /* ProfileEmailCellNode.swift */; };
 		5B756F901E44D28F00CC49A0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5B756F921E44D28F00CC49A0 /* InfoPlist.strings */; };
@@ -54,7 +54,7 @@
 		5B1A3CF21E4225D3003CE5A4 /* KeyboardController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardController.swift; sourceTree = "<group>"; };
 		5B2785041E438F28009F618B /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		5B2785061E43A919009F618B /* ProfileHeaderCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileHeaderCellNode.swift; sourceTree = "<group>"; };
-		5B37D6AC1E4A283700BEE948 /* MessageCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCellNode.swift; sourceTree = "<group>"; };
+		5B37D6AC1E4A283700BEE948 /* LastMessageCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastMessageCellNode.swift; sourceTree = "<group>"; };
 		5B3BB9621E423FD3009FB91B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5B52074F1E448DD600CBF4AB /* ProfileEmailCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileEmailCellNode.swift; sourceTree = "<group>"; };
 		5B756F911E44D28F00CC49A0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -129,7 +129,7 @@
 				5BB380F11E4350EE00E1F315 /* UserCellNode.swift */,
 				5B130EF91E4891FC00BBC9C7 /* Profile */,
 				5B130EF81E4891F100BBC9C7 /* Chat */,
-				5B37D6AC1E4A283700BEE948 /* MessageCellNode.swift */,
+				5B37D6AC1E4A283700BEE948 /* LastMessageCellNode.swift */,
 			);
 			name = Nodes;
 			sourceTree = "<group>";
@@ -364,7 +364,7 @@
 			files = (
 				5BB380F21E4350EE00E1F315 /* UserCellNode.swift in Sources */,
 				5BB380F01E4348B900E1F315 /* BaseNavigationController.swift in Sources */,
-				5B37D6AD1E4A283700BEE948 /* MessageCellNode.swift in Sources */,
+				5B37D6AD1E4A283700BEE948 /* LastMessageCellNode.swift in Sources */,
 				5B9E320D1E4243DF007C4AD3 /* DatabaseManager.swift in Sources */,
 				5B5207501E448DD600CBF4AB /* ProfileEmailCellNode.swift in Sources */,
 				5B130EF71E4891DA00BBC9C7 /* InputContainerNode.swift in Sources */,

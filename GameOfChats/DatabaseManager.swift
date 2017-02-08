@@ -10,8 +10,7 @@ import Firebase
 import RxSwift
 
 class DatabaseManager {
-    private let ref = FIRDatabase
-        .database().reference(fromURL: "https://inchat-b4af9.firebaseio.com/")
+    private let ref = FIRDatabase.database().reference()
 
     static var shared: DatabaseManager = {
         return DatabaseManager()

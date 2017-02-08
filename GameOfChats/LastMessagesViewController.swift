@@ -21,7 +21,7 @@ extension LastMessagesViewController: ASTableDataSource, ASTableDelegate {
         let message = messages[indexPath.row]
 
         return {
-            let node = MessageCellNode(message: message)
+            let node = LastMessageCellNode(message: message)
 
             node.onTap = {
                 // do something...
@@ -120,6 +120,15 @@ class LastMessagesViewController: ASViewController<ASTableNode> {
             .addDisposableTo(disposeBag)
     }
 
+    private func appendNewMessage(_ message: Message) {
+        if messages.contains(where: { $0.toId == message.toId }) {
+            messages = messages.map { $0.toId == message.toId ? message : $0 }
+        } else {
+            messages.append(message)
+        }
+        messages.sort { $0.timestamp > $1.timestamp }
+    }
+
     private func fetchMessages() {
         DatabaseManager.shared.getMessagesList()
             .subscribe(onNext: { [weak self] message in
@@ -128,13 +137,14 @@ class LastMessagesViewController: ASViewController<ASTableNode> {
                 }
 
                 strongSelf.activityIndicatorView.stopAnimating()
-                strongSelf.messages.append(message)
-                strongSelf.tableNode.performBatch(animated: true, updates: {
-                    strongSelf.tableNode.insertRows(
-                        at: [IndexPath(row: strongSelf.messages.count - 1,
-                                       section: 0)],
-                        with: .fade)
-                }, completion: nil)
+                strongSelf.appendNewMessage(message)
+//                strongSelf.tableNode.performBatch(animated: true, updates: {
+//                    strongSelf.tableNode.insertRows(
+//                        at: [IndexPath(row: strongSelf.messages.count - 1,
+//                                       section: 0)],
+//                        with: .fade)
+//                }, completion: nil)
+                strongSelf.tableNode.reloadSections(IndexSet(integer: 0), with: .none)
             }, onError: { [weak self] error in
                 guard let strongSelf = self else {
                     return
