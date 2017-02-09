@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import AsyncDisplayKit
 
-struct Message {
+class Message: IGListDiffable {
     var id: String
     var text: String
     var fromId: String
@@ -28,5 +29,21 @@ struct Message {
         self.fromId = fromId
         self.toId = toId
         self.timestamp = timestamp
+    }
+
+    func diffIdentifier() -> NSObjectProtocol {
+        return id as NSString
+    }
+
+    func isEqual(toDiffableObject object: IGListDiffable?) -> Bool {
+        guard let object = object,
+            let messageObject = object as? Message else {
+                return false
+        }
+
+        return messageObject.text == text
+            && messageObject.fromId == fromId
+            && messageObject.toId == toId
+            && messageObject.timestamp == timestamp
     }
 }

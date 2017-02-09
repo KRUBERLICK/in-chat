@@ -1,11 +1,3 @@
-//
-//  MessageCellNode.swift
-//  InChat
-//
-//  Created by Daniel Ilchishyn on 2/7/17.
-//  Copyright © 2017 KRUBERLICK. All rights reserved.
-//
-
 import AsyncDisplayKit
 
 class LastMessageCellNode: ASCellNode {
@@ -66,8 +58,10 @@ class LastMessageCellNode: ASCellNode {
     override func didLoad() {
         super.didLoad()
         view.addGestureRecognizer(
-            UITapGestureRecognizer(target: self,
-                                   action: #selector(LastMessageCellNode.tapHandler))
+            UITapGestureRecognizer(
+                target: self,
+                action: #selector(LastMessageCellNode.tapHandler)
+            )
         )
     }
 
@@ -83,7 +77,6 @@ class LastMessageCellNode: ASCellNode {
                 guard let strongSelf = self else {
                     return
                 }
-
                 if let avatarImageURL = user.avatar_url {
                     strongSelf.avatarImageNode.url = avatarImageURL
                 } else {
@@ -92,8 +85,10 @@ class LastMessageCellNode: ASCellNode {
                 strongSelf.authorNameNode.attributedText = NSAttributedString(
                     string: user.name,
                     attributes: [NSForegroundColorAttributeName: UIColor.darkText,
-                                 NSFontAttributeName: UIFont.systemFont(ofSize: 17,
-                                                                        weight: UIFontWeightBold)]
+                                 NSFontAttributeName: UIFont.systemFont(
+                                    ofSize: 17,
+                                    weight: UIFontWeightBold)
+                    ]
                 )
             })
 
@@ -105,7 +100,7 @@ class LastMessageCellNode: ASCellNode {
 
         let dateFormatter = DateFormatter()
 
-        dateFormatter.dateStyle = .short
+        dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .short
 
         let dateString = dateFormatter.string(from: message.timeSent)
@@ -120,8 +115,9 @@ class LastMessageCellNode: ASCellNode {
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         authorNameNode.style.flexShrink = 1
         messageTextNode.style.flexShrink = 1
+        avatarImageNode.style.preferredSize = CGSize(width: 60,
+                                                     height: 60)
 
-        avatarImageNode.style.preferredSize = CGSize(width: 60, height: 60)
         let timeAndDisclosureIconStack = ASStackLayoutSpec(
             direction: .horizontal,
             spacing: 5,
@@ -168,11 +164,13 @@ class LastMessageCellNode: ASCellNode {
             alignItems: .stretch,
             children: [separatorNode]
         )
-        let separatorOverlay = ASOverlayLayoutSpec(child: insets, overlay: separatorNodeStack)
+        let separatorOverlay = ASOverlayLayoutSpec(
+            child: insets,
+            overlay: separatorNodeStack
+        )
         
         return separatorOverlay
     }
-    
     @objc private func tapHandler() {
         animatePush(completion: onTap)
     }

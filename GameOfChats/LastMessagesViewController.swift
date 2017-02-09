@@ -10,45 +10,52 @@ import AsyncDisplayKit
 import Firebase
 import RxSwift
 
-extension LastMessagesViewController: ASTableDataSource, ASTableDelegate {
-    func tableNode(_ tableNode: ASTableNode,
-                   numberOfRowsInSection section: Int) -> Int {
-        return messages.count
+extension LastMessagesViewController: IGListAdapterDataSource {
+    func objects(for listAdapter: IGListAdapter) -> [IGListDiffable] {
+        return messages
     }
 
-    func tableNode(_ tableNode: ASTableNode,
-                   nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
-        let message = messages[indexPath.row]
-
-        return {
-            let node = LastMessageCellNode(message: message)
-
-            node.onTap = {
-                // do something...
-            }
-            return node
-        }
+    func listAdapter(_ listAdapter: IGListAdapter,
+                     sectionControllerFor object: Any) -> IGListSectionController {
+        return LastMessagesSectionController()
     }
 
-    func tableNode(_ tableNode: ASTableNode,
-                   constrainedSizeForRowAt indexPath: IndexPath) -> ASSizeRange {
-        return ASSizeRangeMake(CGSize(width: tableNode.bounds.width, height: 90))
+    func emptyView(for listAdapter: IGListAdapter) -> UIView? {
+        let label = UILabel()
+
+        label.text = "No messages"
+        label.textAlignment = .center
+        return label
     }
 }
 
-class LastMessagesViewController: ASViewController<ASTableNode> {
-    private let navigationItemSpinner = UIActivityIndicatorView(activityIndicatorStyle: .white)
+class LastMessagesViewController: ASViewController<ASCollectionNode> {
+    private let navigationItemSpinner =
+        UIActivityIndicatorView(activityIndicatorStyle: .white)
     private let disposeBag = DisposeBag()
     private var messagesFeedDisposeBag = DisposeBag()
-    private let tableNode = ASTableNode(style: .plain)
+    private let collectionNode = ASCollectionNode(
+        collectionViewLayout: UICollectionViewFlowLayout()
+    )
     fileprivate var messages = [Message]()
-    private let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+
+    private let updater = IGListAdapterUpdater()
+
+    private lazy var adapter: IGListAdapter = {
+        let adapter = IGListAdapter(
+            updater: self.updater,
+            viewController: self,
+            workingRangeSize: 0
+        )
+
+        adapter.dataSource = self
+        return adapter
+    }()
 
     init() {
-        super.init(node: tableNode)
-        tableNode.dataSource = self
-        tableNode.delegate = self
+        super.init(node: collectionNode)
         node.backgroundColor = .lightBackground
+        adapter.setASDKCollectionNode(collectionNode)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -57,8 +64,6 @@ class LastMessagesViewController: ASViewController<ASTableNode> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableNode.view.separatorStyle = .none
-        tableNode.view.allowsSelection = false
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: #imageLiteral(resourceName: "account"),
             style: .plain,
@@ -72,17 +77,11 @@ class LastMessagesViewController: ASViewController<ASTableNode> {
         )
         navigationItem.titleView = navigationItemSpinner
         navigationItemSpinner.startAnimating()
-        view.addSubview(activityIndicatorView)
-        activityIndicatorView.frame = CGRect(x: tableNode.frame.midX - 25,
-                                             y: tableNode.frame.midY - 70,
-                                             width: 50,
-                                             height: 50)
         observeUserInfo()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        activityIndicatorView.startAnimating()
         fetchMessages()
     }
 
@@ -94,7 +93,7 @@ class LastMessagesViewController: ASViewController<ASTableNode> {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         messages = []
-        tableNode.reloadData()
+        adapter.performUpdates(animated: false, completion: nil)
     }
 
     private func observeUserInfo() {
@@ -114,8 +113,10 @@ class LastMessagesViewController: ASViewController<ASTableNode> {
                         return
                     }
 
-                    strongSelf.showAlert(title: NSLocalizedString("error", comment: ""),
-                                         message: NSLocalizedString("unknown_error", comment: ""))
+                    strongSelf.showAlert(
+                        title: NSLocalizedString("error", comment: ""),
+                        message: NSLocalizedString("unknown_error", comment: "")
+                    )
             })
             .addDisposableTo(disposeBag)
     }
@@ -130,37 +131,38 @@ class LastMessagesViewController: ASViewController<ASTableNode> {
     }
 
     private func fetchMessages() {
-        DatabaseManager.shared.getMessagesList()
+        DatabaseManager.shared.getUserMessagesList()
             .subscribe(onNext: { [weak self] message in
                 guard let strongSelf = self else {
                     return
                 }
 
-                strongSelf.activityIndicatorView.stopAnimating()
                 strongSelf.appendNewMessage(message)
-//                strongSelf.tableNode.performBatch(animated: true, updates: {
-//                    strongSelf.tableNode.insertRows(
-//                        at: [IndexPath(row: strongSelf.messages.count - 1,
-//                                       section: 0)],
-//                        with: .fade)
-//                }, completion: nil)
-                strongSelf.tableNode.reloadSections(IndexSet(integer: 0), with: .none)
+                strongSelf.adapter.performUpdates(animated: true, completion: nil)
             }, onError: { [weak self] error in
                 guard let strongSelf = self else {
                     return
                 }
 
-                strongSelf.showAlert(title: NSLocalizedString("error", comment: ""),
-                                     message: NSLocalizedString("unknown_error", comment: ""))
+                strongSelf.showAlert(
+                    title: NSLocalizedString("error", comment: ""),
+                    message: NSLocalizedString("unknown_error", comment: "")
+                )
             })
             .addDisposableTo(messagesFeedDisposeBag)
     }
 
     @objc private func openProfile() {
-        navigationController?.pushViewController(ProfileViewController(), animated: true)
+        navigationController?.pushViewController(
+            ProfileViewController(),
+            animated: true
+        )
     }
 
     @objc private func composeNewMessage() {
-        navigationController?.pushViewController(NewMessageViewController(), animated: true)
+        navigationController?.pushViewController(
+            NewMessageViewController(),
+            animated: true
+        )
     }
 }

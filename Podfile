@@ -3,7 +3,7 @@ platform :ios, '9.0'
 target 'InChat' do
     use_frameworks!
 
-    pod 'AsyncDisplayKit'
+    pod 'AsyncDisplayKit/IGListKit'
     pod 'RxSwift'
     pod 'RxCocoa'
     pod 'Firebase/Core'
