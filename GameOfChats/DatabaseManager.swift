@@ -20,6 +20,10 @@ class DatabaseManager {
         return ref.child("user_messages")
     }
 
+    private var lastMessagesNode: FIRDatabaseReference {
+        return ref.child("user_last_messages")
+    }
+
     fileprivate init() {}
 
     func addUser(uid: String,
@@ -221,36 +225,125 @@ class DatabaseManager {
                         observer.onError(error)
                     }
                     self.userMessagesNode.child(FIRAuth.auth()!.currentUser!.uid)
-                        .updateChildValues([newMessageNode.key: 1],
-                                           withCompletionBlock: { error, ref in
+                        .child(recepientId).updateChildValues(
+                            [newMessageNode.key: timestamp],
+                            withCompletionBlock: { error, ref in
+                                if let error = error {
+                                    observer.onError(error)
+                                    return
+                                }
+                                self.userMessagesNode.child(recepientId)
+                                    .child(FIRAuth.auth()!.currentUser!.uid)
+                                    .updateChildValues(
+                                        [newMessageNode.key: timestamp],
+                                        withCompletionBlock: { error, ref in
                                             if let error = error {
                                                 observer.onError(error)
                                                 return
                                             }
-                                            observer.onNext(true)
-                                            observer.onCompleted()
+
+                                            _ = self.clearLastMessagasList()
+                                                .subscribe(onNext: { _ in
+                                                    _ = self.updateLastMessagesListForAllUsers()
+                                                        .subscribe(onNext: {
+                                                            observer.onNext($0)
+                                                            observer.onCompleted()
+                                                        }, onError: { error in
+                                                            observer.onError(error)
+                                                        })
+                                                }, onError: { error in
+                                                    observer.onError(error)
+                                                })
+                                    })
                         })
             })
             return Disposables.create()
         }
     }
 
-    func getUserMessagesList() -> Observable<Message> {
+    private func clearLastMessagasList() -> Observable<Bool> {
         return Observable.create { observer in
-            self.userMessagesNode.child(FIRAuth.auth()!.currentUser!.uid).observe(
+            self.lastMessagesNode.removeValue(completionBlock: { error, ref in
+                if let error = error {
+                    observer.onError(error)
+                    return
+                }
+                observer.onNext(true)
+                observer.onCompleted()
+            })
+            return Disposables.create()
+        }
+    }
+
+    private func updateLastMessagesListForAllUsers() -> Observable<Bool> {
+        return Observable.create { observer in
+            self.userMessagesNode.observe(
+                .childAdded,
+                with: { snapshot in
+                    _ = self.updateLastMessagesList(for: snapshot.key)
+                        .subscribe(onNext: {
+                            observer.onNext($0)
+                            observer.onCompleted()
+                        }, onError: { error in
+                            observer.onError(error)
+                        })
+            }, withCancel: { error in
+                observer.onError(error)
+            })
+            return Disposables.create()
+        }
+    }
+
+    private func updateLastMessagesList(for uid: String) -> Observable<Bool> {
+        return Observable.create { observer in
+            self.userMessagesNode.child(uid).observe(
+                .childAdded,
+                with: { snapshot in
+                    self.userMessagesNode.child(uid)
+                        .child(snapshot.key).queryOrderedByValue()
+                        .queryLimited(toLast: 1).observeSingleEvent(
+                            of: .value,
+                            with: { snapshot in
+                                guard let dict = snapshot.value as? [String: Any],
+                                    let messageId = dict.keys.first,
+                                    let timestamp = dict.values.first as? TimeInterval else {
+                                        return
+                                }
+
+                                self.lastMessagesNode.child(uid)
+                                    .updateChildValues(
+                                        [messageId: -timestamp],
+                                        withCompletionBlock: { error, ref in
+                                            if let error = error {
+                                                observer.onError(error)
+                                                return
+                                            }
+                                            observer.onNext(true)
+                                            observer.onCompleted()
+                                    })
+                        }, withCancel: { error in
+                            observer.onError(error)
+                        })
+            })
+            return Disposables.create()
+        }
+    }
+
+    func getLastMessagesList() -> Observable<Message> {
+        return Observable.create { observer in
+            self.lastMessagesNode.child(FIRAuth.auth()!.currentUser!.uid)
+                .queryOrderedByValue().observe(
                     .childAdded,
                     with: { snapshot in
-                        let messageId = snapshot.key
-
-                        _ = self.getMessageInfo(for: messageId)
+                        _ = self.getMessageInfo(for: snapshot.key)
                             .subscribe(onNext: { message in
                                 observer.onNext(message)
                             }, onError: { error in
                                 observer.onError(error)
                             })
-                }, withCancel: { error in
-                    observer.onError(error)
-                })
+            }, withCancel: { error in
+
+            })
             return Disposables.create()
         }
     }
@@ -268,13 +361,13 @@ class DatabaseManager {
                             observer.onError(NSError())
                             return
                     }
-                    
+
                     let message = Message(id: messageId,
                                           text: messageText,
                                           fromId: fromId,
                                           toId: toId,
                                           timestamp: timestamp)
-
+                    
                     observer.onNext(message)
                     observer.onCompleted()
             }, withCancel: { error in

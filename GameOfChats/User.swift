@@ -6,9 +6,9 @@
 //  Copyright © 2017 KRUBERLICK. All rights reserved.
 //
 
-import UIKit
+import AsyncDisplayKit
 
-struct User {
+class User: IGListDiffable {
     var uid: String
     var name: String
     var email: String
@@ -25,5 +25,18 @@ struct User {
         self.email = email
         self.avatar_url = avatar_url
         self.localImage = localImage
+    }
+
+    func diffIdentifier() -> NSObjectProtocol {
+        return uid as NSString
+    }
+
+    func isEqual(toDiffableObject object: IGListDiffable?) -> Bool {
+        guard let object = object,
+            let userObject = object as? User else {
+                return false
+        }
+
+        return userObject.name == name && userObject.email == email
     }
 }

@@ -33,7 +33,6 @@ class LastMessagesViewController: ASViewController<ASCollectionNode> {
     private let navigationItemSpinner =
         UIActivityIndicatorView(activityIndicatorStyle: .white)
     private let disposeBag = DisposeBag()
-    private var messagesFeedDisposeBag = DisposeBag()
     private let collectionNode = ASCollectionNode(
         collectionViewLayout: UICollectionViewFlowLayout()
     )
@@ -78,22 +77,7 @@ class LastMessagesViewController: ASViewController<ASCollectionNode> {
         navigationItem.titleView = navigationItemSpinner
         navigationItemSpinner.startAnimating()
         observeUserInfo()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         fetchMessages()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        messagesFeedDisposeBag = DisposeBag()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        messages = []
-        adapter.performUpdates(animated: false, completion: nil)
     }
 
     private func observeUserInfo() {
@@ -121,24 +105,41 @@ class LastMessagesViewController: ASViewController<ASCollectionNode> {
             .addDisposableTo(disposeBag)
     }
 
-    private func appendNewMessage(_ message: Message) {
-        if messages.contains(where: { $0.toId == message.toId }) {
-            messages = messages.map { $0.toId == message.toId ? message : $0 }
+    private func addNewMessage(_ message: Message) {
+        if let index = messages.index(where: {
+            ($0.fromId == message.fromId && $0.toId == message.toId)
+                || ($0.fromId == message.toId && $0.toId == message.fromId)
+        }) {
+            messages[index] = message
+        } else if !messages.isEmpty {
+            var res = false
+
+            for i in 0..<messages.count {
+                if messages[i].timestamp <= message.timestamp {
+                    messages.insert(message, at: i)
+                    res = true
+                    break
+                }
+            }
+            if !res {
+                messages.append(message)
+            }
         } else {
             messages.append(message)
         }
-        messages.sort { $0.timestamp > $1.timestamp }
+        messages.sort(by: { $0.timestamp > $1.timestamp })
     }
 
     private func fetchMessages() {
-        DatabaseManager.shared.getUserMessagesList()
+        DatabaseManager.shared.getLastMessagesList()
             .subscribe(onNext: { [weak self] message in
                 guard let strongSelf = self else {
                     return
                 }
 
-                strongSelf.appendNewMessage(message)
-                strongSelf.adapter.performUpdates(animated: true, completion: nil)
+                strongSelf.addNewMessage(message)
+                strongSelf.adapter.performUpdates(animated: true,
+                                                  completion: nil)
             }, onError: { [weak self] error in
                 guard let strongSelf = self else {
                     return
@@ -149,7 +150,7 @@ class LastMessagesViewController: ASViewController<ASCollectionNode> {
                     message: NSLocalizedString("unknown_error", comment: "")
                 )
             })
-            .addDisposableTo(messagesFeedDisposeBag)
+            .addDisposableTo(disposeBag)
     }
 
     @objc private func openProfile() {

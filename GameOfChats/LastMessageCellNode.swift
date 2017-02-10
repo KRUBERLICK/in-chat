@@ -1,4 +1,5 @@
 import AsyncDisplayKit
+import Firebase
 
 class LastMessageCellNode: ASCellNode {
     private let messageTextNode: ASTextNode = {
@@ -72,7 +73,11 @@ class LastMessageCellNode: ASCellNode {
     }
 
     private func bindData() {
-        _ = DatabaseManager.shared.getUserInfo(uid: message.toId)
+        _ = DatabaseManager.shared.getUserInfo(
+            uid: message.toId == FIRAuth.auth()!.currentUser!.uid
+                ? message.fromId
+                : message.toId
+            )
             .subscribe(onNext: { [weak self] user in
                 guard let strongSelf = self else {
                     return
@@ -93,7 +98,9 @@ class LastMessageCellNode: ASCellNode {
             })
 
         messageTextNode.attributedText = NSAttributedString(
-            string: message.text,
+            string: message.fromId == FIRAuth.auth()!.currentUser!.uid
+                ? NSLocalizedString("you", comment: "") + ": \(message.text)"
+                : message.text,
             attributes: [NSForegroundColorAttributeName: UIColor.darkText,
                          NSFontAttributeName: UIFont.systemFont(ofSize: 17)]
         )

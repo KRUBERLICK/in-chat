@@ -10,20 +10,28 @@ import AsyncDisplayKit
 import RxSwift
 
 class NewMessageViewController: ASViewController<ASDisplayNode> {
-    private let tableNode = ASTableNode(style: .plain)
-    private var disposeBag = DisposeBag()
-    fileprivate var users: [User] = []
-    private let activityIndicatorView = UIActivityIndicatorView(
-        activityIndicatorStyle: .gray
+    private let collectionNode = ASCollectionNode(
+        collectionViewLayout: UICollectionViewFlowLayout()
     )
-    private let refreshControl = UIRefreshControl()
+    private let disposeBag = DisposeBag()
+    fileprivate var users: [User] = []
+    private let updater = IGListAdapterUpdater()
+    private lazy var adapter: IGListAdapter = {
+        let adapter = IGListAdapter(
+            updater: self.updater,
+            viewController: self,
+            workingRangeSize: 0
+        )
+
+        adapter.dataSource = self
+        return adapter
+    }()
 
     init() {
-        super.init(node: tableNode)
+        super.init(node: collectionNode)
         title = NSLocalizedString("new_message", comment: "")
-        tableNode.dataSource = self
-        tableNode.delegate = self
         node.backgroundColor = .lightBackground
+        adapter.setASDKCollectionNode(collectionNode)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -32,33 +40,7 @@ class NewMessageViewController: ASViewController<ASDisplayNode> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableNode.view.separatorStyle = .none
-        view.addSubview(activityIndicatorView)
-        activityIndicatorView.frame = CGRect(x: tableNode.frame.midX - 25,
-                                             y: tableNode.frame.midY - 70,
-                                             width: 50,
-                                             height: 50)
-        tableNode.view.addSubview(refreshControl)
-        refreshControl.addTarget(self,
-                                 action: #selector(NewMessageViewController.refreshFeed),
-                                 for: .valueChanged)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        activityIndicatorView.startAnimating()
         fetchUsers()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        disposeBag = DisposeBag()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        users = []
-        tableNode.reloadData()
     }
 
     @objc private func fetchUsers() {
@@ -69,72 +51,40 @@ class NewMessageViewController: ASViewController<ASDisplayNode> {
                     return
                 }
 
-                strongSelf.activityIndicatorView.stopAnimating()
-                strongSelf.refreshControl.endRefreshing()
                 strongSelf.users.append(user)
-                strongSelf.tableNode.performBatch(animated: true, updates: {
-                    strongSelf.tableNode
-                        .insertRows(at: [IndexPath(
-                            row: strongSelf.users.count - 1,
-                            section: 0)], with: .fade)
-                }, completion: nil)
+                strongSelf.adapter.performUpdates(
+                    animated: true,
+                    completion: nil
+                )
             }, onError: { [weak self] _ in
                 guard let strongSelf = self else {
                     return
                 }
 
-                strongSelf.activityIndicatorView.stopAnimating()
-                strongSelf.refreshControl.endRefreshing()
+                strongSelf.showAlert(
+                    title: NSLocalizedString("error", comment: ""),
+                    message: NSLocalizedString("unknown_error", comment: "")
+                )
             })
             .addDisposableTo(disposeBag)
     }
-
-    @objc private func refreshFeed() {
-        users = []
-        tableNode.reloadData {
-            self.perform(#selector(NewMessageViewController.fetchUsers),
-                         with: nil,
-                         afterDelay: 0)
-        }
-    }
 }
 
-extension NewMessageViewController: ASTableDataSource, ASTableDelegate {
-    func tableNode(_ tableNode: ASTableNode,
-                   numberOfRowsInSection section: Int) -> Int {
-        return users.count
+extension NewMessageViewController: IGListAdapterDataSource {
+    func objects(for listAdapter: IGListAdapter) -> [IGListDiffable] {
+        return users
     }
 
-    func tableNode(_ tableNode: ASTableNode,
-                   nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
-        let user = users[indexPath.row]
-        return {
-            let cellNode = UserCellNode(user: user)
-
-            cellNode.onTap = { [weak self] user in
-                guard let strongSelf = self,
-                    let navController = strongSelf.navigationController else {
-                        return
-                }
-
-                navController.pushViewController(
-                    ChatViewController(companion: user),
-                    animated: true
-                )
-
-                navController.viewControllers.remove(
-                    at: navController.viewControllers.count - 2
-                )
-            }
-
-            return cellNode
-        }
+    func listAdapter(_ listAdapter: IGListAdapter,
+                     sectionControllerFor object: Any) -> IGListSectionController {
+        return UsersListSectionController()
     }
 
-    func tableNode(_ tableNode: ASTableNode,
-                   constrainedSizeForRowAt indexPath: IndexPath) -> ASSizeRange {
-        let size = CGSize(width: tableNode.bounds.width, height: 70)
+    func emptyView(for listAdapter: IGListAdapter) -> UIView? {
+        let label = UILabel()
 
-        return ASSizeRangeMake(size)
+        label.text = "No users"
+        label.textAlignment = .center
+        return label
     }
 }

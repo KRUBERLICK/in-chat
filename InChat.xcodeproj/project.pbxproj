@@ -35,6 +35,7 @@
 		5BB380EE1E43448100E1F315 /* NewMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB380ED1E43448100E1F315 /* NewMessageViewController.swift */; };
 		5BB380F01E4348B900E1F315 /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB380EF1E4348B900E1F315 /* BaseNavigationController.swift */; };
 		5BB380F21E4350EE00E1F315 /* UserCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB380F11E4350EE00E1F315 /* UserCellNode.swift */; };
+		5BBA39C61E4DF76100569701 /* UsersListSectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA39C51E4DF76100569701 /* UsersListSectionController.swift */; };
 		5BD0E71C1E49DE7800727012 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD0E71B1E49DE7800727012 /* Message.swift */; };
 		5BD549A01E4671B00094A2E8 /* ReachabilityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD5499F1E4671B00094A2E8 /* ReachabilityProvider.swift */; };
 /* End PBXBuildFile section */
@@ -75,6 +76,7 @@
 		5BB380ED1E43448100E1F315 /* NewMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageViewController.swift; sourceTree = "<group>"; };
 		5BB380EF1E4348B900E1F315 /* BaseNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 		5BB380F11E4350EE00E1F315 /* UserCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCellNode.swift; sourceTree = "<group>"; };
+		5BBA39C51E4DF76100569701 /* UsersListSectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersListSectionController.swift; sourceTree = "<group>"; };
 		5BD0E71B1E49DE7800727012 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5BD5499F1E4671B00094A2E8 /* ReachabilityProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReachabilityProvider.swift; sourceTree = "<group>"; };
 		B52EA711BE07F1B66F3140BB /* Pods-InChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-InChat/Pods-InChat.release.xcconfig"; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				5B2F804A1E4CFB3E0045A4BE /* LastMessagesSectionController.swift */,
+				5BBA39C51E4DF76100569701 /* UsersListSectionController.swift */,
 			);
 			name = SectionControllers;
 			sourceTree = "<group>";
@@ -381,6 +384,7 @@
 				5B5207501E448DD600CBF4AB /* ProfileEmailCellNode.swift in Sources */,
 				5B130EF71E4891DA00BBC9C7 /* InputContainerNode.swift in Sources */,
 				5BB380E91E433B8F00E1F315 /* ASDisplayNode+PushAnimation.swift in Sources */,
+				5BBA39C61E4DF76100569701 /* UsersListSectionController.swift in Sources */,
 				5B9E32101E425114007C4AD3 /* AuthManager.swift in Sources */,
 				5B075ACF1E41049500A702BC /* LastMessagesViewController.swift in Sources */,
 				5B2785071E43A919009F618B /* ProfileHeaderCellNode.swift in Sources */,
