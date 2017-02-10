@@ -21,8 +21,16 @@ class LastMessagesSectionController: IGListSectionController, IGListSectionType,
         return {
             let node = LastMessageCellNode(message: message)
 
-            node.onTap = {
-                // do something...
+            node.onTap = { [weak self] userId in
+                guard let navController = self?.viewController?
+                    .navigationController else {
+                        return
+                }
+
+                navController.pushViewController(
+                    ChatViewController(companionId: userId),
+                    animated: true
+                )
             }
             return node
         }

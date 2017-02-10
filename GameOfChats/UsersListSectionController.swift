@@ -29,7 +29,7 @@ class UsersListSectionController: IGListSectionController, IGListSectionType, AS
                 }
 
                 navController.pushViewController(
-                    ChatViewController(companion: user),
+                    ChatViewController(companionId: user.uid),
                     animated: true
                 )
 

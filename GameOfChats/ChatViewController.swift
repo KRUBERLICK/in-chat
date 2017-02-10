@@ -11,12 +11,12 @@ import RxSwift
 
 class ChatViewController: ViewControllerWithKeyboard {
     private let chatNode = ChatNode()
-    private let companion: User
+    private let companionId: String
+    private let disposeBag = DisposeBag()
 
-    init(companion: User) {
-        self.companion = companion
+    init(companionId: String) {
+        self.companionId = companionId
         super.init(node: chatNode)
-        navigationItem.title = companion.name
         chatNode.onMessageSend = { [unowned self] message in
             self.keyboardController.hideKeyboard {
                 self.sendMessage(message)
@@ -28,6 +28,20 @@ class ChatViewController: ViewControllerWithKeyboard {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private func getCompanionInfo() {
+        DatabaseManager.shared.getUserInfo(uid: companionId)
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] user in
+                self?.navigationItem.title = user.name
+            }, onError: { [weak self] error in
+                self?.showAlert(
+                    title: NSLocalizedString("error", comment: ""),
+                    message: NSLocalizedString("unknown_error", comment: "")
+                )
+            })
+            .addDisposableTo(disposeBag)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         chatNode.collectionNode.view.addGestureRecognizer(
@@ -36,6 +50,7 @@ class ChatViewController: ViewControllerWithKeyboard {
                 action: #selector(ViewControllerWithKeyboard.hideKeyboard)
             )
         )
+        getCompanionInfo()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -54,7 +69,7 @@ class ChatViewController: ViewControllerWithKeyboard {
         chatNode.inputContainerNode.sendButtonNode.isEnabled = false
 
         _ = DatabaseManager.shared.addMessage(messageText: message,
-                                              recepientId: companion.uid)
+                                              recepientId: companionId)
             .observeOn(MainScheduler.instance)
             .subscribe(onError: { [weak self] error in
                 guard let strongSelf = self else {

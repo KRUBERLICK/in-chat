@@ -47,7 +47,7 @@ class LastMessageCellNode: ASCellNode {
     }()
 
     private let message: Message
-    var onTap: (() -> ())?
+    var onTap: ((String) -> ())?
 
     init(message: Message) {
         self.message = message
@@ -179,6 +179,12 @@ class LastMessageCellNode: ASCellNode {
         return separatorOverlay
     }
     @objc private func tapHandler() {
-        animatePush(completion: onTap)
+        animatePush { [unowned self] in
+            self.onTap?(
+                self.message.fromId == FIRAuth.auth()!.currentUser!.uid
+                    ? self.message.toId
+                    : self.message.fromId
+            )
+        }
     }
 }
