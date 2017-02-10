@@ -9,9 +9,8 @@
 import AsyncDisplayKit
 import RxSwift
 
-class ChatViewController: ASViewController<ASDisplayNode> {
+class ChatViewController: ViewControllerWithKeyboard {
     private let chatNode = ChatNode()
-    private var keyboardController: KeyboardController!
     private let companion: User
 
     init(companion: User) {
@@ -31,11 +30,12 @@ class ChatViewController: ASViewController<ASDisplayNode> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        keyboardController = KeyboardController(view: view)
         chatNode.collectionNode.view.addGestureRecognizer(
             UITapGestureRecognizer(
                 target: self,
-                action: #selector(ChatViewController.hideKeyboard)))
+                action: #selector(ViewControllerWithKeyboard.hideKeyboard)
+            )
+        )
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -65,13 +65,5 @@ class ChatViewController: ASViewController<ASDisplayNode> {
                     title: NSLocalizedString("error", comment: ""),
                     message: NSLocalizedString("unknown_error", comment: ""))
             })
-    }
-
-    override var prefersStatusBarHidden: Bool {
-        return false
-    }
-
-    @objc private func hideKeyboard() {
-        keyboardController.hideKeyboard()
     }
 }
