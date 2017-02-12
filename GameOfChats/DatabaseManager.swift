@@ -226,7 +226,7 @@ class DatabaseManager {
                     }
                     self.userMessagesNode.child(FIRAuth.auth()!.currentUser!.uid)
                         .child(recepientId).updateChildValues(
-                            [newMessageNode.key: timestamp],
+                            [newMessageNode.key: -timestamp],
                             withCompletionBlock: { error, ref in
                                 if let error = error {
                                     observer.onError(error)
@@ -235,7 +235,7 @@ class DatabaseManager {
                                 self.userMessagesNode.child(recepientId)
                                     .child(FIRAuth.auth()!.currentUser!.uid)
                                     .updateChildValues(
-                                        [newMessageNode.key: timestamp],
+                                        [newMessageNode.key: -timestamp],
                                         withCompletionBlock: { error, ref in
                                             if let error = error {
                                                 observer.onError(error)
@@ -301,7 +301,7 @@ class DatabaseManager {
                 with: { snapshot in
                     self.userMessagesNode.child(uid)
                         .child(snapshot.key).queryOrderedByValue()
-                        .queryLimited(toLast: 1).observeSingleEvent(
+                        .queryLimited(toFirst: 1).observeSingleEvent(
                             of: .value,
                             with: { snapshot in
                                 guard let dict = snapshot.value as? [String: Any],
@@ -312,7 +312,7 @@ class DatabaseManager {
 
                                 self.lastMessagesNode.child(uid)
                                     .updateChildValues(
-                                        [messageId: -timestamp],
+                                        [messageId: timestamp],
                                         withCompletionBlock: { error, ref in
                                             if let error = error {
                                                 observer.onError(error)
