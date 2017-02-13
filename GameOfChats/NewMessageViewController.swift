@@ -83,8 +83,9 @@ extension NewMessageViewController: IGListAdapterDataSource {
     func emptyView(for listAdapter: IGListAdapter) -> UIView? {
         let label = UILabel()
 
-        label.text = "No users"
+        label.text = NSLocalizedString("no_users", comment: "")
         label.textAlignment = .center
+        label.textColor = .darkText
         return label
     }
 }

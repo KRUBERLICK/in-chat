@@ -93,6 +93,6 @@ class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         sendButtonTapped()
-        return true
+        return false
     }
 }

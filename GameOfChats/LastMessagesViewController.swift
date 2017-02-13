@@ -23,8 +23,9 @@ extension LastMessagesViewController: IGListAdapterDataSource {
     func emptyView(for listAdapter: IGListAdapter) -> UIView? {
         let label = UILabel()
 
-        label.text = "No messages"
+        label.text = NSLocalizedString("no_messages", comment: "")
         label.textAlignment = .center
+        label.textColor = .darkText
         return label
     }
 }
@@ -84,20 +85,12 @@ class LastMessagesViewController: ASViewController<ASCollectionNode> {
         DatabaseManager.shared.getUserInfoContinuously(uid: FIRAuth.auth()!
             .currentUser!.uid)
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [weak self] user in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.navigationItemSpinner.stopAnimating()
-                strongSelf.navigationItem.titleView = nil
-                strongSelf.navigationItem.title = user.name
-                }, onError: { [weak self] error in
-                    guard let strongSelf = self else {
-                        return
-                    }
-
-                    strongSelf.showAlert(
+            .subscribe(onNext: { [unowned self] user in
+                self.navigationItemSpinner.stopAnimating()
+                self.navigationItem.titleView = nil
+                self.navigationItem.title = user.name
+                }, onError: { [unowned self] error in
+                    self.showAlert(
                         title: NSLocalizedString("error", comment: ""),
                         message: NSLocalizedString("unknown_error", comment: "")
                     )
@@ -132,20 +125,12 @@ class LastMessagesViewController: ASViewController<ASCollectionNode> {
 
     private func fetchMessages() {
         DatabaseManager.shared.getLastMessagesList()
-            .subscribe(onNext: { [weak self] message in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.addNewMessage(message)
-                strongSelf.adapter.performUpdates(animated: true,
+            .subscribe(onNext: { [unowned self] message in
+                self.addNewMessage(message)
+                self.adapter.performUpdates(animated: true,
                                                   completion: nil)
-            }, onError: { [weak self] error in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.showAlert(
+            }, onError: { [unowned self] error in
+                self.showAlert(
                     title: NSLocalizedString("error", comment: ""),
                     message: NSLocalizedString("unknown_error", comment: "")
                 )

@@ -24,6 +24,8 @@
 		5B3BB9631E423FD3009FB91B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5B3BB9621E423FD3009FB91B /* GoogleService-Info.plist */; };
 		5B5207501E448DD600CBF4AB /* ProfileEmailCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B52074F1E448DD600CBF4AB /* ProfileEmailCellNode.swift */; };
 		5B756F901E44D28F00CC49A0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5B756F921E44D28F00CC49A0 /* InfoPlist.strings */; };
+		5B8880C61E51B7B80095C66D /* ChatMessagesSectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8880C51E51B7B80095C66D /* ChatMessagesSectionController.swift */; };
+		5B8880C81E51C8160095C66D /* ChatMessageCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8880C71E51C8160095C66D /* ChatMessageCellNode.swift */; };
 		5B9E320D1E4243DF007C4AD3 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9E320C1E4243DF007C4AD3 /* DatabaseManager.swift */; };
 		5B9E32101E425114007C4AD3 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9E320F1E425114007C4AD3 /* AuthManager.swift */; };
 		5BB0D29E1E4100B7000A1672 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB0D29D1E4100B7000A1672 /* AppDelegate.swift */; };
@@ -64,6 +66,8 @@
 		5B756F911E44D28F00CC49A0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5B756F931E44D29200CC49A0 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5B756F941E44D29300CC49A0 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5B8880C51E51B7B80095C66D /* ChatMessagesSectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessagesSectionController.swift; sourceTree = "<group>"; };
+		5B8880C71E51C8160095C66D /* ChatMessageCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageCellNode.swift; sourceTree = "<group>"; };
 		5B9E320C1E4243DF007C4AD3 /* DatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		5B9E320F1E425114007C4AD3 /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		5BB0D29A1E4100B7000A1672 /* InChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,6 +149,7 @@
 			children = (
 				5B130EF41E4888CB00BBC9C7 /* ChatNode.swift */,
 				5B130EF61E4891DA00BBC9C7 /* InputContainerNode.swift */,
+				5B8880C71E51C8160095C66D /* ChatMessageCellNode.swift */,
 			);
 			name = Chat;
 			sourceTree = "<group>";
@@ -163,6 +168,7 @@
 			children = (
 				5B2F804A1E4CFB3E0045A4BE /* LastMessagesSectionController.swift */,
 				5BBA39C51E4DF76100569701 /* UsersListSectionController.swift */,
+				5B8880C51E51B7B80095C66D /* ChatMessagesSectionController.swift */,
 			);
 			name = SectionControllers;
 			sourceTree = "<group>";
@@ -402,6 +408,7 @@
 				5B075AD31E41071A00A702BC /* Utils.swift in Sources */,
 				5BBA39C81E4E003400569701 /* ViewControllerWithKeyboard.swift in Sources */,
 				5BD549A01E4671B00094A2E8 /* ReachabilityProvider.swift in Sources */,
+				5B8880C61E51B7B80095C66D /* ChatMessagesSectionController.swift in Sources */,
 				5BB0D2A01E4100B7000A1672 /* LoginViewController.swift in Sources */,
 				5B130EF31E48868900BBC9C7 /* ChatViewController.swift in Sources */,
 				5B1A3CF11E41E65D003CE5A4 /* BaseDisplayNode.swift in Sources */,
@@ -409,6 +416,7 @@
 				5B075AD51E41108600A702BC /* LoginNode.swift in Sources */,
 				5B130EF51E4888CB00BBC9C7 /* ChatNode.swift in Sources */,
 				5BD0E71C1E49DE7800727012 /* Message.swift in Sources */,
+				5B8880C81E51C8160095C66D /* ChatMessageCellNode.swift in Sources */,
 				5BB0D29E1E4100B7000A1672 /* AppDelegate.swift in Sources */,
 				5B2785051E438F28009F618B /* ProfileViewController.swift in Sources */,
 				5B1A3CF31E4225D3003CE5A4 /* KeyboardController.swift in Sources */,

@@ -342,7 +342,26 @@ class DatabaseManager {
                                 observer.onError(error)
                             })
             }, withCancel: { error in
+                observer.onError(error)
+            })
+            return Disposables.create()
+        }
+    }
 
+    func getChatMessagesList(with partnerId: String) -> Observable<Message> {
+        return Observable.create { observer in
+            self.userMessagesNode.child(FIRAuth.auth()!.currentUser!.uid).child(partnerId)
+                .queryOrderedByValue().observe(
+                    .childAdded,
+                    with: { snapshot in
+                        _ = self.getMessageInfo(for: snapshot.key)
+                            .subscribe(onNext: { message in
+                                observer.onNext(message)
+                            }, onError: { error in
+                                observer.onError(error)
+                            })
+            }, withCancel: { error in
+                observer.onError(error)
             })
             return Disposables.create()
         }

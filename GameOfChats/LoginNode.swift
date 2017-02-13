@@ -71,11 +71,11 @@ class LoginNode: BaseDisplayNode {
         textField.layer.borderColor = UIColor.white.cgColor
         textField.layer.borderWidth = 1
         textField.defaultTextAttributes = [NSForegroundColorAttributeName: UIColor.white,
-                                           NSFontAttributeName: UIFont.systemFont(ofSize: 25)]
+                                           NSFontAttributeName: UIFont.systemFont(ofSize: 20)]
         textField.attributedPlaceholder = NSAttributedString(
             string: $0,
             attributes: [NSForegroundColorAttributeName: UIColor(white: 1, alpha: 0.5),
-                         NSFontAttributeName: UIFont.systemFont(ofSize: 25)]
+                         NSFontAttributeName: UIFont.systemFont(ofSize: 20)]
         )
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
@@ -133,7 +133,7 @@ class LoginNode: BaseDisplayNode {
     private lazy var mainButtonNode: ASButtonNode = {
         let buttonNode = ASButtonNode()
         let titleAttribs = [NSForegroundColorAttributeName: UIColor.white,
-                            NSFontAttributeName: UIFont.systemFont(ofSize: 30)]
+                            NSFontAttributeName: UIFont.systemFont(ofSize: 25)]
 
         buttonNode.backgroundColor = .loginButtonBackground
         buttonNode.setAttributedTitle(NSAttributedString(

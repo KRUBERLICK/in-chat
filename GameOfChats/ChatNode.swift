@@ -13,14 +13,7 @@ import RxCocoa
 class ChatNode: ASDisplayNode {
     var onMessageSend: ((String) -> ())?
 
-    let collectionNode: ASCollectionNode = {
-        let collectionNode = ASCollectionNode(
-            collectionViewLayout: UICollectionViewFlowLayout()
-        )
-
-        collectionNode.backgroundColor = .lightBackground
-        return collectionNode
-    }()
+    let collectionNode = ASCollectionNode(collectionViewLayout: UICollectionViewFlowLayout())
 
     private(set) lazy var inputContainerNode: InputContainerNode = {
         let node = InputContainerNode()
@@ -41,6 +34,7 @@ class ChatNode: ASDisplayNode {
     override init() {
         super.init()
         automaticallyManagesSubnodes = true
+        collectionNode.backgroundColor = .lightBackground
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -55,5 +49,10 @@ class ChatNode: ASDisplayNode {
             alignItems: .stretch,
             children: [collectionNode, separatorNode,  inputContainerNode]
         )
+    }
+
+    override func didLoad() {
+        super.didLoad()
+        collectionNode.view.transform = collectionNode.view.transform.rotated(by: CGFloat.pi)
     }
 }
