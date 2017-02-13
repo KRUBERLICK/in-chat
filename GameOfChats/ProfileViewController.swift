@@ -40,27 +40,6 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
         setupUserInfoObserver()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        guard (presentedViewController as? UIImagePickerController) == nil else {
-            return
-        }
-
-        setupUserInfoObserver()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        guard (presentedViewController as? UIImagePickerController) == nil else {
-            return
-        }
-
-        view.endEditing(false)
-        disposeBag = DisposeBag()
-    }
-
     private func setupUserInfoObserver() {
         DatabaseManager.shared.getUserInfo(uid: FIRAuth.auth()!.currentUser!.uid)
             .observeOn(MainScheduler.instance)
@@ -94,13 +73,13 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
                                          handler: nil)
         let logoutAction = UIAlertAction(title: NSLocalizedString("logout", comment: ""),
                                          style: .destructive,
-                                         handler: { [unowned self] _ in
-                                            self.logout()
+                                         handler: { [weak self] _ in
+                                            self?.logout()
         })
 
         alertController.addAction(logoutAction)
         alertController.addAction(cancelAction)
-        present(alertController, animated: true, completion: nil)
+        navigationController?.present(alertController, animated: true, completion: nil)
     }
 
     @objc private func logout() {
@@ -153,7 +132,7 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
             title: NSLocalizedString("make_photo", comment: ""),
             style: .default,
             handler: { _ in
-
+                // Implement action
         })
         let chooseFromGalleryAction = UIAlertAction(
             title: NSLocalizedString("choose_from_gallery", comment: ""),
@@ -163,7 +142,7 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
 
                 imagePicker.delegate = self
                 imagePicker.allowsEditing = true
-                self.present(imagePicker, animated: true, completion: nil)
+                self.navigationController?.present(imagePicker, animated: true, completion: nil)
         })
         let removeAvatarAction = UIAlertAction(
             title: NSLocalizedString("remove_avatar", comment: ""),
@@ -171,21 +150,13 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
             handler: { [unowned self] _ in
                 _ = DatabaseManager.shared.removeUserAvatar(uid: self.user.uid)
                     .subscribe(onError: { [weak self] error in
-                        guard let strongSelf = self else {
-                            return
-                        }
-
-                        strongSelf.showAlert(title: NSLocalizedString("error", comment: ""),
+                        self?.showAlert(title: NSLocalizedString("error", comment: ""),
                                              message: NSLocalizedString("unknown_error", comment: ""))
                         }, onCompleted: { [weak self] in
-                            guard let strongSelf = self else {
-                                return
-                            }
-
-                            strongSelf.user.localImage = nil
-                            strongSelf.user.avatar_url = nil
+                            self?.user.localImage = nil
+                            self?.user.avatar_url = nil
                             DispatchQueue.main.async {
-                                strongSelf.tableNode.reloadSections(IndexSet(integer: 0), with: .fade)
+                                self?.tableNode.reloadSections(IndexSet(integer: 0), with: .fade)
                             }
                     })
         })
@@ -194,11 +165,11 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
             style: .cancel,
             handler: nil)
 
-        alertController.addAction(makePhotoAction)
+        //alertController.addAction(makePhotoAction)
         alertController.addAction(chooseFromGalleryAction)
         alertController.addAction(removeAvatarAction)
         alertController.addAction(cancelAction)
-        present(alertController, animated: true, completion: nil)
+        navigationController?.present(alertController, animated: true, completion: nil)
     }
 }
 

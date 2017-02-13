@@ -90,6 +90,11 @@ class LastMessagesViewController: ASViewController<ASCollectionNode> {
                 self.navigationItem.titleView = nil
                 self.navigationItem.title = user.name
                 }, onError: { [unowned self] error in
+                    guard let topVC = self.navigationController?.topViewController,
+                        topVC === self else {
+                            return
+                    }
+                    
                     self.showAlert(
                         title: NSLocalizedString("error", comment: ""),
                         message: NSLocalizedString("unknown_error", comment: "")
@@ -130,6 +135,11 @@ class LastMessagesViewController: ASViewController<ASCollectionNode> {
                 self.adapter.performUpdates(animated: true,
                                                   completion: nil)
             }, onError: { [unowned self] error in
+                guard let topVC = self.navigationController?.topViewController,
+                    topVC === self else {
+                        return
+                }
+
                 self.showAlert(
                     title: NSLocalizedString("error", comment: ""),
                     message: NSLocalizedString("unknown_error", comment: "")
