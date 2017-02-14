@@ -18,8 +18,8 @@ class ChatNode: ASDisplayNode {
     private(set) lazy var inputContainerNode: InputContainerNode = {
         let node = InputContainerNode()
 
-        node.onSendTap = { [unowned self] message in
-            self.onMessageSend?(message)
+        node.onSendTap = { [weak self] message in
+            self?.onMessageSend?(message)
         }
         return node
     }()

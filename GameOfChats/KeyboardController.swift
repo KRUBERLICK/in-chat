@@ -9,12 +9,11 @@
 import UIKit
 
 class KeyboardController {
-    private var callback: (() -> ())?
-    private var parentView: UIView
-    private var keyboardIsShowing = false
+    var callback: (() -> ())?
+    var parentView: UIView!
+    var keyboardIsShowing = false
 
-    init(view: UIView) {
-        parentView = view
+    init() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(KeyboardController.handleKeyboard(_:)),
@@ -37,7 +36,7 @@ class KeyboardController {
         parentView.endEditing(false)
     }
 
-    @objc private func handleKeyboard(_ notification: Notification) {
+    @objc func handleKeyboard(_ notification: Notification) {
         guard let window = parentView.window,
             let keyboardInfo = notification.userInfo,
             let keyboardFrame = (keyboardInfo[UIKeyboardFrameEndUserInfoKey]

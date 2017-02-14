@@ -10,6 +10,12 @@ import AsyncDisplayKit
 
 class UsersListSectionController: IGListSectionController, IGListSectionType, ASSectionController {
     var object: User?
+    let presentationManager: PresentationManager
+
+    init(presentationManager: PresentationManager) {
+        self.presentationManager = presentationManager
+        super.init()
+    }
 
     func numberOfItems() -> Int {
         return 1
@@ -18,8 +24,10 @@ class UsersListSectionController: IGListSectionController, IGListSectionType, AS
     func nodeBlockForItem(at index: Int) -> ASCellNodeBlock {
         let user = object!
 
-        return {
-            let node = UserCellNode(user: user)
+        return { [weak self] in
+            guard let node = self?.presentationManager.getUserCellNode(for: user) else {
+                return ASCellNode()
+            }
 
             node.onTap = { [weak self] user in
                 guard let strongSelf = self,
@@ -29,7 +37,8 @@ class UsersListSectionController: IGListSectionController, IGListSectionType, AS
                 }
 
                 navController.pushViewController(
-                    ChatViewController(companionId: user.uid),
+                    strongSelf.presentationManager
+                        .getChatViewController(with: user.uid),
                     animated: true
                 )
 

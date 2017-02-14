@@ -11,14 +11,24 @@ import RxSwift
 import Firebase
 
 class LoginViewController: ASViewController<ASDisplayNode> {
-    private let loginNode = LoginNode()
-    private var disposeBag = DisposeBag()
+    let loginNode: LoginNode
+    let disposeBag = DisposeBag()
+    let authManager: AuthManager
+    let databaseManager: DatabaseManager
+    let presentationManager: PresentationManager
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 
-    init() {
+    init(loginNode: LoginNode,
+         authManager: AuthManager,
+         databaseManager: DatabaseManager,
+         presentationManager: PresentationManager) {
+        self.loginNode = loginNode
+        self.authManager = authManager
+        self.databaseManager = databaseManager
+        self.presentationManager = presentationManager
         super.init(node: loginNode)
     }
 
@@ -26,32 +36,31 @@ class LoginViewController: ASViewController<ASDisplayNode> {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         setupLoginNodeObserver()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        disposeBag = DisposeBag()
-    }
-
-    private func setupLoginNodeObserver() {
+    func setupLoginNodeObserver() {
         loginNode.userInputResultPublisher
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] in
+            .subscribe(onNext: { [weak self] in
+                guard let strongSelf = self else {
+                    return
+                }
+
                 switch $0 {
                 case let .login(email, password):
                     guard !email.isEmpty,
                         !password.isEmpty else {
-                            self.showAlert(
+                            strongSelf.showAlert(
                                 title: NSLocalizedString("error", comment: ""),
                                 message: NSLocalizedString("input_all_fields", comment: "")
                             )
                             return
                     }
 
-                AuthManager.shared.signInUser(email: email, password: password)
+                strongSelf.authManager.signInUser(email: email, password: password)
                     .subscribe(onError: { [weak self] error in
                         guard let strongSelf = self else {
                             return
@@ -82,13 +91,13 @@ class LoginViewController: ASViewController<ASDisplayNode> {
 
                         strongSelf.proceedToApp()
                     })
-                    .addDisposableTo(self.disposeBag)
+                    .addDisposableTo(strongSelf.disposeBag)
                 case let .register(username, email, password, confirm):
                     guard !username.isEmpty,
                         !email.isEmpty,
                         !password.isEmpty,
                         !confirm.isEmpty else {
-                            self.showAlert(
+                            strongSelf.showAlert(
                                 title: NSLocalizedString("error", comment: ""),
                                 message: NSLocalizedString("input_all_fields", comment: "")
                             )
@@ -96,15 +105,15 @@ class LoginViewController: ASViewController<ASDisplayNode> {
                     }
 
                     guard password == confirm else {
-                        self.showAlert(
+                        strongSelf.showAlert(
                             title: NSLocalizedString("error", comment: ""),
                             message: NSLocalizedString("passwords_dont_match", comment: "")
                         )
                         return
                     }
 
-                    AuthManager.shared.registerUser(email: email, password: password)
-                        .flatMap { DatabaseManager.shared.addUser(uid: $0.uid, username: username, email: email) }
+                    strongSelf.authManager.registerUser(email: email, password: password)
+                        .flatMap { strongSelf.databaseManager.addUser(uid: $0.uid, username: username, email: email) }
                         .subscribe(onError: { [weak self] error in
                             guard let strongSelf = self else {
                                 return
@@ -133,19 +142,19 @@ class LoginViewController: ASViewController<ASDisplayNode> {
 
                             strongSelf.proceedToApp()
                         })
-                        .addDisposableTo(self.disposeBag)
+                        .addDisposableTo(strongSelf.disposeBag)
                 }
             })
             .addDisposableTo(disposeBag)
     }
 
-    private func proceedToApp() {
+    func proceedToApp() {
         guard let window = view.window else {
             return
         }
 
         let lastMessagesViewController = BaseNavigationController(
-            rootViewController: LastMessagesViewController()
+            rootViewController: self.presentationManager.getLastMessagesViewController()
         )
 
         UIView.performWithoutAnimation {

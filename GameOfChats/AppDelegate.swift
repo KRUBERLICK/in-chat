@@ -8,6 +8,7 @@
 
 import AsyncDisplayKit
 import Firebase
+import DITranquillity
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,16 +19,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FIRApp.configure()
 
-        _ = ReachabilityProvider.shared
-
         window = UIWindow(frame: UIScreen.main.bounds)
-        if let _ = FIRAuth.auth()?.currentUser?.uid {
-            window?.rootViewController = BaseNavigationController(
-                rootViewController: LastMessagesViewController()
-            )
-        } else {
-            window?.rootViewController = LoginViewController()
-        }
+
+        let builder = DIContainerBuilder()
+
+        builder.register(assembly: AppAssembly())
+
+        let scope = try! builder.build()
+        let presentationManager: PresentationManager = try! scope.resolve()
+
+        window?.rootViewController = presentationManager.getInitialViewController()
         window?.makeKeyAndVisible()
         return true
     }

@@ -17,7 +17,7 @@ extension ProfileHeaderCellNode: UITextFieldDelegate {
     }
 
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        guard ReachabilityProvider.shared.firebaseReachabilityStatus.value else {
+        guard reachabilityProvider.firebaseReachabilityStatus.value else {
             return false
         }
 
@@ -26,8 +26,9 @@ extension ProfileHeaderCellNode: UITextFieldDelegate {
 }
 
 class ProfileHeaderCellNode: ASCellNode {
-    private let avatarImageNode = ASNetworkImageNode()
-    private lazy var nameTextField: UITextField = {
+    let avatarImageNode = ASNetworkImageNode()
+
+    lazy var nameTextField: UITextField = {
         let textField = UITextField()
 
         let paragraphStyle = NSMutableParagraphStyle()
@@ -42,18 +43,22 @@ class ProfileHeaderCellNode: ASCellNode {
         textField.returnKeyType = .done
         return textField
     }()
-    private var nameNode: ASDisplayNode!
-    private var user: User
+
+    var nameNode: ASDisplayNode!
+    var user: User
     var onUserUpdate: ((User) -> ())?
     var onAvatarTap: (() -> ())?
-    private var keyboardController: KeyboardController!
+    var keyboardController: KeyboardController!
+    let reachabilityProvider: ReachabilityProvider
 
-    init(user: User = User(uid: "", name: "", email: "")) {
+    init(user: User = User(uid: "", name: "", email: ""),
+         reachabilityProvider: ReachabilityProvider) {
         self.user = user
+        self.reachabilityProvider = reachabilityProvider
         super.init()
         automaticallyManagesSubnodes = true
         backgroundColor = .profileHeaderBackground
-        nameNode = ASDisplayNode(viewBlock: { [unowned self] in self.nameTextField })
+        nameNode = ASDisplayNode(viewBlock: { [weak self] in self?.nameTextField ?? UIView() })
         if let avatarURL = user.avatar_url {
             avatarImageNode.url = avatarURL
         } else if let localAvatar = user.localImage {
@@ -69,7 +74,7 @@ class ProfileHeaderCellNode: ASCellNode {
 
     override func didLoad() {
         super.didLoad()
-        keyboardController = KeyboardController(view: view)
+        keyboardController.parentView = view
         view.addGestureRecognizer(
             UITapGestureRecognizer(
                 target: self,
@@ -77,7 +82,6 @@ class ProfileHeaderCellNode: ASCellNode {
             )
         )
         _ = nameTextField.rx.text.asObservable()
-//            .throttle(2, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] value in
                 guard let value = value,
                     !value.isEmpty,
@@ -110,11 +114,11 @@ class ProfileHeaderCellNode: ASCellNode {
         return imageAndTextFieldStack
     }
 
-    @objc fileprivate func hideKeyboard() {
+    func hideKeyboard() {
         keyboardController.hideKeyboard()
     }
 
-    @objc private func avatarTapHandler() {
+    func avatarTapHandler() {
         view.endEditing(false)
         avatarImageNode.animatePush(completion: onAvatarTap)
     }

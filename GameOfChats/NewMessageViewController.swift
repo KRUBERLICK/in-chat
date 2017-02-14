@@ -10,13 +10,14 @@ import AsyncDisplayKit
 import RxSwift
 
 class NewMessageViewController: ASViewController<ASDisplayNode> {
-    private let collectionNode = ASCollectionNode(
+    let collectionNode = ASCollectionNode(
         collectionViewLayout: UICollectionViewFlowLayout()
     )
-    private let disposeBag = DisposeBag()
-    fileprivate var users: [User] = []
-    private let updater = IGListAdapterUpdater()
-    private lazy var adapter: IGListAdapter = {
+    let disposeBag = DisposeBag()
+    var users: [User] = []
+    let updater = IGListAdapterUpdater()
+
+    lazy var adapter: IGListAdapter = {
         let adapter = IGListAdapter(
             updater: self.updater,
             viewController: self,
@@ -27,7 +28,13 @@ class NewMessageViewController: ASViewController<ASDisplayNode> {
         return adapter
     }()
 
-    init() {
+    let presentationManager: PresentationManager
+    let databaseManager: DatabaseManager
+
+    init(presentationManager: PresentationManager,
+         databaseManager: DatabaseManager) {
+        self.presentationManager = presentationManager
+        self.databaseManager = databaseManager
         super.init(node: collectionNode)
         title = NSLocalizedString("new_message", comment: "")
         node.backgroundColor = .lightBackground
@@ -43,25 +50,17 @@ class NewMessageViewController: ASViewController<ASDisplayNode> {
         fetchUsers()
     }
 
-    @objc private func fetchUsers() {
-        DatabaseManager.shared.getUsersList()
+    func fetchUsers() {
+        databaseManager.getUsersList()
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] user in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.users.append(user)
-                strongSelf.adapter.performUpdates(
+                self?.users.append(user)
+                self?.adapter.performUpdates(
                     animated: true,
                     completion: nil
                 )
             }, onError: { [weak self] _ in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.showAlert(
+                self?.showAlert(
                     title: NSLocalizedString("error", comment: ""),
                     message: NSLocalizedString("unknown_error", comment: "")
                 )
@@ -77,7 +76,7 @@ extension NewMessageViewController: IGListAdapterDataSource {
 
     func listAdapter(_ listAdapter: IGListAdapter,
                      sectionControllerFor object: Any) -> IGListSectionController {
-        return UsersListSectionController()
+        return presentationManager.getUsersListSectionController()
     }
 
     func emptyView(for listAdapter: IGListAdapter) -> UIView? {

@@ -10,16 +10,24 @@ import Firebase
 import RxSwift
 
 class AuthManager {
-    static var shared: AuthManager = {
-        return AuthManager()
-    }()
+    let authProvider: FIRAuth
 
-    fileprivate init() {}
+    var currentUserId: String {
+        return authProvider.currentUser!.uid
+    }
+
+    var isLoggedIn: Bool {
+        return authProvider.currentUser != nil
+    }
+
+    init(authProvider: FIRAuth) {
+        self.authProvider = authProvider
+    }
 
     func registerUser(email: String,
                       password: String) -> Observable<FIRUser> {
-        return Observable.create { observer in
-            FIRAuth.auth()?.createUser(
+        return Observable.create { [weak self] observer in
+            self?.authProvider.createUser(
                 withEmail: email,
                 password: password,
                 completion: { user, error in
@@ -41,8 +49,8 @@ class AuthManager {
     }
 
     func signInUser(email: String, password: String) -> Observable<FIRUser> {
-        return Observable.create { observer in
-            FIRAuth.auth()?.signIn(
+        return Observable.create { [weak self] observer in
+            self?.authProvider.signIn(
                 withEmail: email,
                 password: password,
                 completion: { user, error in
@@ -64,9 +72,9 @@ class AuthManager {
     }
 
     func logout() -> Observable<Bool> {
-        return Observable.create { observer in
+        return Observable.create { [weak self] observer in
             do {
-                try FIRAuth.auth()?.signOut()
+                try self?.authProvider.signOut()
                 observer.onNext(true)
                 observer.onCompleted()
             } catch let error {

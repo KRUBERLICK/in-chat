@@ -11,11 +11,11 @@ import RxSwift
 import RxCocoa
 
 class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
-    private var textFieldNode: ASDisplayNode!
+    var textFieldNode: ASDisplayNode!
     var onSendTap: ((String) -> ())?
-    private let disposeBag = DisposeBag()
+    let disposeBag = DisposeBag()
 
-    private(set) lazy var textField: UITextField = {
+    lazy var textField: UITextField = {
         let textField = UITextField()
 
         textField.defaultTextAttributes = [NSForegroundColorAttributeName: UIColor.darkText,
@@ -26,8 +26,8 @@ class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
                          NSFontAttributeName: UIFont.systemFont(ofSize: 17)]
         )
         textField.rx.text
-            .subscribe(onNext: { [unowned self] text in
-                self.sendButtonNode.isEnabled = !(text ?? "").isEmpty
+            .subscribe(onNext: { [weak self] text in
+                self?.sendButtonNode.isEnabled = !(text ?? "").isEmpty
             })
             .addDisposableTo(self.disposeBag)
         textField.returnKeyType = .send
@@ -36,7 +36,7 @@ class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
         return textField
     }()
 
-    private(set) lazy var sendButtonNode: ASButtonNode = {
+    lazy var sendButtonNode: ASButtonNode = {
         let buttonNode = ASButtonNode()
         let activeColor = UIColor.navigationBarBackground
         let inactiveColor = UIColor(white: 0, alpha: 0.2)
@@ -65,7 +65,7 @@ class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
         super.init()
         automaticallyManagesSubnodes = true
         backgroundColor = .white
-        textFieldNode = ASDisplayNode(viewBlock: { [unowned self] in self.textField })
+        textFieldNode = ASDisplayNode(viewBlock: { [weak self] in self?.textField ?? UIView() })
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -87,7 +87,7 @@ class InputContainerNode: ASDisplayNode, UITextFieldDelegate {
         return insets
     }
 
-    @objc private func sendButtonTapped() {
+    func sendButtonTapped() {
         onSendTap?(textField.text ?? "")
     }
 

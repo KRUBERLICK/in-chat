@@ -10,8 +10,10 @@ import AsyncDisplayKit
 
 class ChatMessagesSectionController: IGListSectionController, IGListSectionType, ASSectionController {
     var object: Message!
+    let presentationManager: PresentationManager
 
-    override init() {
+    init(presentationManager: PresentationManager) {
+        self.presentationManager = presentationManager
         super.init()
         inset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
     }
@@ -23,8 +25,11 @@ class ChatMessagesSectionController: IGListSectionController, IGListSectionType,
     func nodeBlockForItem(at index: Int) -> ASCellNodeBlock {
         let message = object!
 
-        return {
-            let node = ChatMessageCellNode(message: message)
+        return { [weak self] in
+            guard let node = self?.presentationManager
+                .getChatMessageCellNode(for: message) else {
+                    return ASCellNode()
+            }
 
             return node
         }

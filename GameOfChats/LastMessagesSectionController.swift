@@ -10,6 +10,12 @@ import AsyncDisplayKit
 
 class LastMessagesSectionController: IGListSectionController, IGListSectionType, ASSectionController {
     var object: Message?
+    let presentationManager: PresentationManager
+
+    init(presentationManager: PresentationManager) {
+        self.presentationManager = presentationManager
+        super.init()
+    }
 
     func numberOfItems() -> Int {
         return 1
@@ -18,17 +24,21 @@ class LastMessagesSectionController: IGListSectionController, IGListSectionType,
     func nodeBlockForItem(at index: Int) -> ASCellNodeBlock {
         let message = object!
 
-        return {
-            let node = LastMessageCellNode(message: message)
+        return { [weak self] in
+            guard let node = self?.presentationManager
+                .getLastMessageCellNode(for: message) else {
+                    return ASCellNode()
+            }
 
             node.onTap = { [weak self] userId in
-                guard let navController = self?.viewController?
-                    .navigationController else {
-                        return
+                guard let strongSelf = self,
+                    let navController = self?.viewController?
+                        .navigationController else {
+                            return
                 }
 
                 navController.pushViewController(
-                    ChatViewController(companionId: userId),
+                    strongSelf.presentationManager.getChatViewController(with: userId),
                     animated: true
                 )
             }

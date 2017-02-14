@@ -2,7 +2,7 @@ import AsyncDisplayKit
 import Firebase
 
 class LastMessageCellNode: ASCellNode {
-    private let messageTextNode: ASTextNode = {
+    let messageTextNode: ASTextNode = {
         let node = ASTextNode()
 
         node.maximumNumberOfLines = 2
@@ -10,14 +10,14 @@ class LastMessageCellNode: ASCellNode {
         return node
     }()
 
-    private let avatarImageNode: ASNetworkImageNode = {
+    let avatarImageNode: ASNetworkImageNode = {
         let node = ASNetworkImageNode()
 
         node.backgroundColor = .separatorColor
         return node
     }()
 
-    private let authorNameNode: ASTextNode = {
+    let authorNameNode: ASTextNode = {
         let node = ASTextNode()
 
         node.maximumNumberOfLines = 1
@@ -25,32 +25,38 @@ class LastMessageCellNode: ASCellNode {
         return node
     }()
 
-    private let timeNode: ASTextNode = {
+    let timeNode: ASTextNode = {
         let node = ASTextNode()
 
         node.maximumNumberOfLines = 1
         return node
     }()
 
-    private let disclosureIconNode: ASImageNode = {
+    let disclosureIconNode: ASImageNode = {
         let node = ASImageNode()
 
         node.image = #imageLiteral(resourceName: "disclosure_right")
         return node
     }()
 
-    private let separatorNode: ASDisplayNode = {
+    let separatorNode: ASDisplayNode = {
         let node = ASDisplayNode()
 
         node.backgroundColor = .separatorColor
         return node
     }()
 
-    private let message: Message
+    let message: Message
     var onTap: ((String) -> ())?
+    let databaseManager: DatabaseManager
+    let authManager: AuthManager
 
-    init(message: Message) {
+    init(message: Message,
+         databaseManager: DatabaseManager,
+         authManager: AuthManager) {
         self.message = message
+        self.databaseManager = databaseManager
+        self.authManager = authManager
         super.init()
         automaticallyManagesSubnodes = true
         bindData()
@@ -72,9 +78,9 @@ class LastMessageCellNode: ASCellNode {
         avatarImageNode.clipsToBounds = true
     }
 
-    private func bindData() {
-        _ = DatabaseManager.shared.getUserInfo(
-            uid: message.toId == FIRAuth.auth()!.currentUser!.uid
+    func bindData() {
+        _ = databaseManager.getUserInfo(
+            uid: message.toId == authManager.currentUserId
                 ? message.fromId
                 : message.toId
             )
@@ -98,7 +104,7 @@ class LastMessageCellNode: ASCellNode {
             })
 
         messageTextNode.attributedText = NSAttributedString(
-            string: message.fromId == FIRAuth.auth()!.currentUser!.uid
+            string: message.fromId == authManager.currentUserId
                 ? NSLocalizedString("you", comment: "") + ": \(message.text)"
                 : message.text,
             attributes: [NSForegroundColorAttributeName: UIColor.darkText,
@@ -178,12 +184,17 @@ class LastMessageCellNode: ASCellNode {
         
         return separatorOverlay
     }
-    @objc private func tapHandler() {
-        animatePush { [unowned self] in
-            self.onTap?(
-                self.message.fromId == FIRAuth.auth()!.currentUser!.uid
-                    ? self.message.toId
-                    : self.message.fromId
+
+    func tapHandler() {
+        animatePush { [weak self] in
+            guard let strongSelf = self else {
+                return
+            }
+
+            strongSelf.onTap?(
+                strongSelf.message.fromId == strongSelf.authManager.currentUserId
+                    ? strongSelf.message.toId
+                    : strongSelf.message.fromId
             )
         }
     }

@@ -10,16 +10,16 @@ import AsyncDisplayKit
 import Firebase
 
 class ChatMessageCellNode: ASCellNode {
-    private let message: Message
+    let message: Message
 
-    private let messageText: ASTextNode = {
+    let messageText: ASTextNode = {
         let node = ASTextNode()
 
         node.maximumNumberOfLines = 0
         return node
     }()
 
-    private lazy var messageTextWrapper: ASDisplayNode = {
+    lazy var messageTextWrapper: ASDisplayNode = {
         let node = ASDisplayNode()
 
         node.automaticallyManagesSubnodes = true
@@ -33,14 +33,16 @@ class ChatMessageCellNode: ASCellNode {
         return node
     }()
 
-    private var isOwnMessage: Bool {
-        return message.fromId == FIRAuth.auth()!.currentUser!.uid
+    var isOwnMessage: Bool {
+        return message.fromId == authManager.currentUserId
     }
 
-    private let timeNode = ASTextNode()
+    let timeNode = ASTextNode()
+    let authManager: AuthManager
 
-    init(message: Message) {
+    init(message: Message, authManager: AuthManager) {
         self.message = message
+        self.authManager = authManager
         super.init()
         automaticallyManagesSubnodes = true
         bindData()

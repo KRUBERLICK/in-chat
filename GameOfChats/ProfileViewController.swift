@@ -11,11 +11,22 @@ import RxSwift
 import Firebase
 
 class ProfileViewController: ASViewController<ASDisplayNode> {
-    private var disposeBag = DisposeBag()
-    fileprivate let tableNode = ASTableNode(style: .plain)
-    fileprivate var user: User!
+    var disposeBag = DisposeBag()
+    let tableNode = ASTableNode(style: .plain)
+    var user: User!
+    let presentationManager: PresentationManager
+    let databaseManager: DatabaseManager
+    let authManager: AuthManager
+    let reachabilityProvider: ReachabilityProvider
 
-    init() {
+    init(presentationManager: PresentationManager,
+         databaseManager: DatabaseManager,
+         authManager: AuthManager,
+         reachabilityProvider: ReachabilityProvider) {
+        self.presentationManager = presentationManager
+        self.databaseManager = databaseManager
+        self.authManager = authManager
+        self.reachabilityProvider = reachabilityProvider
         super.init(node: tableNode)
         tableNode.dataSource = self
         tableNode.delegate = self
@@ -40,23 +51,15 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
         setupUserInfoObserver()
     }
 
-    private func setupUserInfoObserver() {
-        DatabaseManager.shared.getUserInfo(uid: FIRAuth.auth()!.currentUser!.uid)
+    func setupUserInfoObserver() {
+        databaseManager.getUserInfo(uid: FIRAuth.auth()!.currentUser!.uid)
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] user in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.user = user
-                strongSelf.tableNode.reloadSections(IndexSet(integer: 0), with: .fade)
-                strongSelf.disposeBag = DisposeBag()
+                self?.user = user
+                self?.tableNode.reloadSections(IndexSet(integer: 0), with: .none)
+                self?.disposeBag = DisposeBag()
             }, onError: { [weak self] error in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.showAlert(
+                self?.showAlert(
                     title: NSLocalizedString("error", comment: ""),
                     message: NSLocalizedString("unknown_error", comment: "")
                 )
@@ -64,7 +67,7 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
             .addDisposableTo(disposeBag)
     }
 
-    @objc private func moreButtonTapped() {
+    func moreButtonTapped() {
         let alertController = UIAlertController(title: nil,
                                                 message: nil,
                                                 preferredStyle: .actionSheet)
@@ -82,26 +85,19 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
         navigationController?.present(alertController, animated: true, completion: nil)
     }
 
-    @objc private func logout() {
-        guard let window = navigationController?.view.window else {
-            return
-        }
-
-        _ = AuthManager.shared.logout()
+    func logout() {
+        _ = authManager.logout()
             .observeOn(MainScheduler.instance)
             .subscribe(onError: { [weak self] error in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.showAlert(title: NSLocalizedString("error", comment: ""),
+                self?.showAlert(title: NSLocalizedString("error", comment: ""),
                                      message: NSLocalizedString("unknown_error", comment: ""))
-                }, onCompleted: { [weak window] in
-                    guard let strongWindow = window else {
-                        return
+                }, onCompleted: { [weak self] in
+                    guard let strongSelf = self,
+                        let strongWindow = strongSelf.navigationController?.view.window else {
+                            return
                     }
 
-                    let loginViewController = LoginViewController()
+                    let loginViewController = strongSelf.presentationManager.getLoginViewController()
 
                     UIView.performWithoutAnimation {
                         loginViewController.view.setNeedsLayout()
@@ -116,8 +112,8 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
             })
     }
 
-    fileprivate func showAvatarPickMenu() {
-        guard ReachabilityProvider.shared.firebaseReachabilityStatus.value else {
+    func showAvatarPickMenu() {
+        guard reachabilityProvider.firebaseReachabilityStatus.value else {
             showAlert(title: NSLocalizedString("error", comment: ""),
                       message: NSLocalizedString("network_error", comment: ""))
             return
@@ -137,18 +133,22 @@ class ProfileViewController: ASViewController<ASDisplayNode> {
         let chooseFromGalleryAction = UIAlertAction(
             title: NSLocalizedString("choose_from_gallery", comment: ""),
             style: .default,
-            handler: { [unowned self] _ in
+            handler: { [weak self] _ in
                 let imagePicker = UIImagePickerController()
 
                 imagePicker.delegate = self
                 imagePicker.allowsEditing = true
-                self.navigationController?.present(imagePicker, animated: true, completion: nil)
+                self?.navigationController?.present(imagePicker, animated: true, completion: nil)
         })
         let removeAvatarAction = UIAlertAction(
             title: NSLocalizedString("remove_avatar", comment: ""),
             style: .destructive,
-            handler: { [unowned self] _ in
-                _ = DatabaseManager.shared.removeUserAvatar(uid: self.user.uid)
+            handler: { [weak self] _ in
+                guard let strongSelf = self else {
+                    return
+                }
+
+                _ = strongSelf.databaseManager.removeUserAvatar(uid: strongSelf.user.uid)
                     .subscribe(onError: { [weak self] error in
                         self?.showAlert(title: NSLocalizedString("error", comment: ""),
                                              message: NSLocalizedString("unknown_error", comment: ""))
@@ -191,36 +191,26 @@ extension ProfileViewController: ASTableDelegate, ASTableDataSource {
                 var cellNode: ProfileHeaderCellNode
 
                 if let user = strongSelf.user {
-                    cellNode = ProfileHeaderCellNode(user: user)
+                    cellNode = strongSelf.presentationManager
+                        .getProfileHeaderCellNode(for: user)
                 } else {
-                    cellNode = ProfileHeaderCellNode()
+                    cellNode = strongSelf.presentationManager
+                        .getProfileHeaderCellNode()
                 }
 
                 cellNode.onUserUpdate = { user in
-                    _ = DatabaseManager.shared.updateUser(user)
+                    _ = strongSelf.databaseManager.updateUser(user)
                         .subscribe(onError: { [weak self] error in
-                            guard let strongSelf = self else {
-                                return
-                            }
-
-                            strongSelf.showAlert(
+                            self?.showAlert(
                                 title: NSLocalizedString("error", comment: ""),
                                 message: NSLocalizedString("unknown_error", comment: "")
                             )
                             }, onCompleted: { [weak self] in
-                                guard let strongSelf = self else {
-                                    return
-                                }
-
-                                strongSelf.user = user
+                                self?.user = user
                         })
                 }
                 cellNode.onAvatarTap = { [weak self] in
-                    guard let strongSelf = self else {
-                        return
-                    }
-
-                    strongSelf.showAvatarPickMenu()
+                    self?.showAvatarPickMenu()
                 }
                 return cellNode
             }
@@ -277,13 +267,9 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         user.localImage = selectedImage
         tableNode.reloadSections(IndexSet(integer: 0), with: .fade)
 
-        _ = DatabaseManager.shared.updateUser(user)
+        _ = databaseManager.updateUser(user)
             .subscribe(onError: { [weak self] error in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.showAlert(
+                self?.showAlert(
                     title: NSLocalizedString("error", comment: ""),
                     message: NSLocalizedString("unknown_error", comment: "")
                 )

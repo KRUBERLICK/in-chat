@@ -117,8 +117,12 @@ class UserCellNode: ASCellNode {
     }
 
     @objc private func tapHandler() {
-        animatePush { [unowned self] in
-            self.onTap?(self.user)
+        animatePush { [weak self] in
+            guard let strongSelf = self else {
+                return
+            }
+
+            strongSelf.onTap?(strongSelf.user)
         }
     }
 }

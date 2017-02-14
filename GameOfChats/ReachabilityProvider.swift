@@ -10,20 +10,24 @@ import Firebase
 import RxSwift
 
 class ReachabilityProvider {
-    private let connectedReference = FIRDatabase.database()
-        .reference(withPath: ".info/connected")
+    private var connectedReference: FIRDatabaseReference {
+        return database.reference(withPath: ".info/connected")
+    }
+
     var firebaseReachabilityStatus = Variable<Bool>(false)
+    let database: FIRDatabase
 
-    static var shared: ReachabilityProvider = {
-        return ReachabilityProvider()
-    }()
+    init(database: FIRDatabase) {
+        self.database = database
+        connectedReference.observe(.value, with: { [weak self] snapshot in
+            guard let strongSelf = self else {
+                return
+            }
 
-    fileprivate init() {
-        connectedReference.observe(.value, with: { [unowned self] snapshot in
             if let connected = snapshot.value as? Bool, connected {
-                self.firebaseReachabilityStatus.value = true
+                strongSelf.firebaseReachabilityStatus.value = true
             } else {
-                self.firebaseReachabilityStatus.value = false
+                strongSelf.firebaseReachabilityStatus.value = false
             }
         })
     }

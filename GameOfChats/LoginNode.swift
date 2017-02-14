@@ -44,9 +44,9 @@ class LoginNode: BaseDisplayNode {
     }
 
     let userInputResultPublisher = PublishSubject<UserInputResult>()
-    private var keyboardController: KeyboardController!
+    var keyboardController: KeyboardController!
 
-    private lazy var titleNode: ASTextNode = {
+    lazy var titleNode: ASTextNode = {
         let textNode = ASTextNode()
         let textAttribs = [NSForegroundColorAttributeName: UIColor.white,
                            NSFontAttributeName: UIFont.systemFont(
@@ -59,7 +59,7 @@ class LoginNode: BaseDisplayNode {
         return textNode
     }()
 
-    private let textFieldFactory: (String) -> UITextField = {
+    let textFieldFactory: (String) -> UITextField = {
         let textField = UITextField()
         let spacerView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 1))
 
@@ -83,7 +83,7 @@ class LoginNode: BaseDisplayNode {
         return textField
     }
 
-    fileprivate lazy var usernameTextField: UITextField = {
+    lazy var usernameTextField: UITextField = {
         let textField = self.textFieldFactory(NSLocalizedString("your_name", comment: ""))
 
         textField.autocapitalizationType = .words
@@ -94,7 +94,7 @@ class LoginNode: BaseDisplayNode {
         return textField
     }()
 
-    fileprivate lazy var emailTextField: UITextField = {
+    lazy var emailTextField: UITextField = {
         let textField = self.textFieldFactory(NSLocalizedString("email", comment: ""))
 
         textField.layer.cornerRadius = self.textFieldsHeight / 2
@@ -104,7 +104,7 @@ class LoginNode: BaseDisplayNode {
         return textField
     }()
 
-    fileprivate lazy var passwordTextField: UITextField = {
+    lazy var passwordTextField: UITextField = {
         let textField = self.textFieldFactory(NSLocalizedString("password", comment: ""))
 
         textField.isSecureTextEntry = true
@@ -114,7 +114,7 @@ class LoginNode: BaseDisplayNode {
         return textField
     }()
 
-    fileprivate lazy var passwordConfirmTextField: UITextField = {
+    lazy var passwordConfirmTextField: UITextField = {
         let textField = self.textFieldFactory(NSLocalizedString("password_confirm", comment: ""))
 
         textField.isSecureTextEntry = true
@@ -124,13 +124,13 @@ class LoginNode: BaseDisplayNode {
         return textField
     }()
 
-    private let textFieldsHeight: CGFloat = 50
-    private var usernameNode: ASDisplayNode!
-    private var emailNode: ASDisplayNode!
-    private var passwordNode: ASDisplayNode!
-    private var passwordConfirmNode: ASDisplayNode!
+    let textFieldsHeight: CGFloat = 50
+    var usernameNode: ASDisplayNode!
+    var emailNode: ASDisplayNode!
+    var passwordNode: ASDisplayNode!
+    var passwordConfirmNode: ASDisplayNode!
 
-    private lazy var mainButtonNode: ASButtonNode = {
+    lazy var mainButtonNode: ASButtonNode = {
         let buttonNode = ASButtonNode()
         let titleAttribs = [NSForegroundColorAttributeName: UIColor.white,
                             NSFontAttributeName: UIFont.systemFont(ofSize: 25)]
@@ -151,7 +151,7 @@ class LoginNode: BaseDisplayNode {
         return buttonNode
     }()
 
-    private lazy var bottomText: ASTextNode = {
+    lazy var bottomText: ASTextNode = {
         let textNode = ASTextNode()
         let textAttribs = [NSForegroundColorAttributeName: UIColor.white,
                            NSFontAttributeName: UIFont.systemFont(ofSize: 15)]
@@ -165,7 +165,7 @@ class LoginNode: BaseDisplayNode {
         return textNode
     }()
 
-    private lazy var bottomButton: ASButtonNode = {
+    lazy var bottomButton: ASButtonNode = {
         let buttonNode = ASButtonNode()
         let textAttribs: [String: Any] = [NSForegroundColorAttributeName: UIColor.white,
                                           NSFontAttributeName: UIFont.systemFont(ofSize: 15),
@@ -199,10 +199,10 @@ class LoginNode: BaseDisplayNode {
 
     override init() {
         super.init()
-        usernameNode = ASDisplayNode(viewBlock: { [unowned self] in self.usernameTextField })
-        emailNode = ASDisplayNode(viewBlock: { [unowned self] in self.emailTextField })
-        passwordNode = ASDisplayNode(viewBlock: { [unowned self] in self.passwordTextField })
-        passwordConfirmNode = ASDisplayNode(viewBlock: { [unowned self] in self.passwordConfirmTextField })
+        usernameNode = ASDisplayNode(viewBlock: { [weak self] in self?.usernameTextField ?? UIView() })
+        emailNode = ASDisplayNode(viewBlock: { [weak self] in self?.emailTextField ?? UIView() })
+        passwordNode = ASDisplayNode(viewBlock: { [weak self] in self?.passwordTextField ?? UIView() })
+        passwordConfirmNode = ASDisplayNode(viewBlock: { [weak self] in self?.passwordConfirmTextField ?? UIView() })
         automaticallyManagesSubnodes = true
     }
 
@@ -271,7 +271,7 @@ class LoginNode: BaseDisplayNode {
 
     override func didLoad() {
         super.didLoad()
-        keyboardController = KeyboardController(view: view)
+        keyboardController.parentView = view
         mainButtonNode.layer.shadowColor = UIColor.black.cgColor
         mainButtonNode.layer.shadowOpacity = 0.2
         mainButtonNode.layer.shadowOffset = CGSize(width: 0, height: 2)
@@ -292,7 +292,7 @@ class LoginNode: BaseDisplayNode {
         super.animateLayoutTransition(context)
     }
 
-    private func updateTexts() {
+    func updateTexts() {
         passwordTextField.returnKeyType = self.mode == .login ? .done : .next
         mainButtonNode.setAttributedTitle(
             NSAttributedString(string: NSLocalizedString(mode == .login
@@ -316,7 +316,7 @@ class LoginNode: BaseDisplayNode {
                                 .attributes(at: 0, effectiveRange: nil)), for: [])
     }
 
-    private func setupGradientBackground() {
+    func setupGradientBackground() {
         let gradientLayer = CAGradientLayer()
 
         gradientLayer.frame = view.bounds
@@ -325,7 +325,7 @@ class LoginNode: BaseDisplayNode {
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
 
-    @objc private func modeSwitch() {
+    func modeSwitch() {
         usernameTextField.text = ""
         passwordTextField.text = ""
         passwordConfirmTextField.text = ""
@@ -336,29 +336,32 @@ class LoginNode: BaseDisplayNode {
         }
     }
 
-    @objc private func mainButtonNodeTapped() {
-        mainButtonNode.animatePush { [unowned self] in
-            self.publishUserInput()
+    func mainButtonNodeTapped() {
+        mainButtonNode.animatePush { [weak self] in
+            self?.publishUserInput()
         }
     }
 
-    @objc fileprivate func publishUserInput() {
-        keyboardController.hideKeyboard { [unowned self] in
+    func publishUserInput() {
+        keyboardController.hideKeyboard { [weak self] in
+            guard let strongSelf = self else {
+                return
+            }
 
-            switch self.mode {
+            switch strongSelf.mode {
             case .login:
-                self.userInputResultPublisher.onNext(.login(self.emailTextField.text ?? "",
-                                                            self.passwordTextField.text ?? ""))
+                strongSelf.userInputResultPublisher.onNext(.login(strongSelf.emailTextField.text ?? "",
+                                                                  strongSelf.passwordTextField.text ?? ""))
             case .register:
-                self.userInputResultPublisher.onNext(.register(self.usernameTextField.text ?? "",
-                                                               self.emailTextField.text ?? "",
-                                                               self.passwordTextField.text ?? "",
-                                                               self.passwordConfirmTextField.text ?? ""))
+                strongSelf.userInputResultPublisher.onNext(.register(strongSelf.usernameTextField.text ?? "",
+                                                                     strongSelf.emailTextField.text ?? "",
+                                                                     strongSelf.passwordTextField.text ?? "",
+                                                                     strongSelf.passwordConfirmTextField.text ?? ""))
             }
         }
     }
 
-    @objc private func hideKeyboard() {
+    func hideKeyboard() {
         keyboardController.hideKeyboard()
     }
 }

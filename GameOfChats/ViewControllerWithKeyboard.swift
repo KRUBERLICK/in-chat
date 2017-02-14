@@ -15,11 +15,6 @@ class ViewControllerWithKeyboard: ASViewController<ASDisplayNode> {
         return false
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        keyboardController = KeyboardController(view: view)
-    }
-
     func hideKeyboard() {
         keyboardController.hideKeyboard()
     }
