@@ -7,13 +7,21 @@
 //
 
 import AsyncDisplayKit
+import ObjectMapper
 
-class User: IGListDiffable {
-    var uid: String
+class User: IGListDiffable, ImmutableMappable {
+    let uid: String
     var name: String
-    var email: String
+    let email: String
     var avatar_url: URL?
     var localImage: UIImage?
+
+    required init(map: Map) throws {
+        uid = try map.value("uid")
+        name = try map.value("name")
+        email = try map.value("email")
+        avatar_url = try? map.value("avatar_url", using: URLTransform())
+    }
 
     init(uid: String,
          name: String,
@@ -25,6 +33,13 @@ class User: IGListDiffable {
         self.email = email
         self.avatar_url = avatar_url
         self.localImage = localImage
+    }
+
+    func mapping(map: Map) {
+        uid >>> map["uid"]
+        name >>> map["name"]
+        email >>> map["email"]
+        avatar_url >>> (map["avatar_url"], URLTransform())
     }
 
     func diffIdentifier() -> NSObjectProtocol {

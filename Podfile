@@ -12,4 +12,5 @@ target 'InChat' do
     pod 'Firebase/Storage'
     pod 'Firebase/RemoteConfig'
     pod 'DITranquillity'
+    pod 'ObjectMapper'
 end

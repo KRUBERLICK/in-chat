@@ -64,6 +64,7 @@ PODS:
   - IGListKit/Default (2.1.0):
     - IGListKit/Diffing
   - IGListKit/Diffing (2.1.0)
+  - ObjectMapper (2.2.2)
   - RxCocoa (3.1.0):
     - RxSwift (~> 3.1)
   - RxSwift (3.1.0)
@@ -76,6 +77,7 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/RemoteConfig
   - Firebase/Storage
+  - ObjectMapper
   - RxCocoa
   - RxSwift
 
@@ -95,9 +97,10 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 6f8d8b28b7e345549ac471071608170b31cb4977
   IGListKit: b826c68ef7a4ae1626c09d4d3e1ea7a169e6c36e
+  ObjectMapper: 9e385c2295bcc4e16eabbcfc85db801442bba545
   RxCocoa: 50d7564866da9299161e86a263ce12a0873904d8
   RxSwift: 83ff553e7593fdfdcb2562933a64c0284dffdadc
 
-PODFILE CHECKSUM: 7b2d3359f7b02ecbec29bf3f2c23d8be27cd2e27
+PODFILE CHECKSUM: 4e2b072612ccea58a724e232244091eb87d5857c
 
 COCOAPODS: 1.2.0

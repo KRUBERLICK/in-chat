@@ -8,15 +8,24 @@
 
 import Foundation
 import AsyncDisplayKit
+import ObjectMapper
 
-class Message: IGListDiffable {
-    var id: String
+class Message: IGListDiffable, ImmutableMappable {
+    let id: String
     var text: String
-    var fromId: String
-    var toId: String
+    let fromId: String
+    let toId: String
     var timestamp: TimeInterval
     var timeSent: Date {
         return Date(timeIntervalSince1970: timestamp)
+    }
+
+    required init(map: Map) throws {
+        id = try map.value("id")
+        text = try map.value("text")
+        fromId = try map.value("fromId")
+        toId = try map.value("toId")
+        timestamp = try map.value("timestamp")
     }
 
     init(id: String,
@@ -29,6 +38,14 @@ class Message: IGListDiffable {
         self.fromId = fromId
         self.toId = toId
         self.timestamp = timestamp
+    }
+
+    func mapping(map: Map) {
+        id >>> map["id"]
+        text >>> map["text"]
+        fromId >>> map["fromId"]
+        toId >>> map["toId"]
+        timestamp >>> map["timestamp"]
     }
 
     func diffIdentifier() -> NSObjectProtocol {

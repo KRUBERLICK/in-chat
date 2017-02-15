@@ -121,25 +121,16 @@ class DatabaseManager {
             self?.usersNode.child(uid).observeSingleEvent(
                 of: .value,
                 with: { snapshot in
-                    guard let dict = snapshot.value as? [String: AnyObject],
-                        let username = dict["name"] as? String,
-                        let email = dict["email"] as? String else {
-                            observer.onError(NSError())
-                            return
+                    guard var dict = snapshot.value as? [String: Any] else {
+                        observer.onError(NSError())
+                        return
                     }
 
-                    var avatarURL: URL?
-
-                    if let avatarURLString = dict["avatar_url"] as? String {
-                        avatarURL = URL(string: avatarURLString)
+                    dict["uid"] = snapshot.key
+                    if let user = try? User(JSON: dict) {
+                        observer.onNext(user)
+                        observer.onCompleted()
                     }
-
-                    let user = User(uid: uid,
-                                    name: username,
-                                    email: email,
-                                    avatar_url: avatarURL)
-
-                    observer.onNext(user)
             }, withCancel: { error in
                 observer.onError(error)
             })
@@ -152,25 +143,15 @@ class DatabaseManager {
             self?.usersNode.child(uid).observe(
                 .value,
                 with: { snapshot in
-                    guard let dict = snapshot.value as? [String: AnyObject],
-                        let username = dict["name"] as? String,
-                        let email = dict["email"] as? String else {
-                            observer.onError(NSError())
-                            return
+                    guard var dict = snapshot.value as? [String: Any] else {
+                        observer.onError(NSError())
+                        return
                     }
 
-                    var avatarURL: URL?
-
-                    if let avatarURLString = dict["avatar_url"] as? String {
-                        avatarURL = URL(string: avatarURLString)
+                    dict["uid"] = snapshot.key
+                    if let user = try? User(JSON: dict) {
+                        observer.onNext(user)
                     }
-
-                    let user = User(uid: uid,
-                                    name: username,
-                                    email: email,
-                                    avatar_url: avatarURL)
-
-                    observer.onNext(user)
             }, withCancel: { error in
                 observer.onError(error)
             })
@@ -183,26 +164,15 @@ class DatabaseManager {
             self?.usersNode.observe(
                 .childAdded,
                 with: { snapshot in
-                    guard let dict = snapshot.value as? [String: AnyObject],
-                        let username = dict["name"] as? String,
-                        let email = dict["email"] as? String else {
-                            observer.onError(NSError())
-                            return
+                    guard var dict = snapshot.value as? [String: Any] else {
+                        observer.onError(NSError())
+                        return
                     }
 
-                    let uid = snapshot.key
-                    var avatarURL: URL?
-
-                    if let avatarURLString = dict["avatar_url"] as? String {
-                        avatarURL = URL(string: avatarURLString)
+                    dict["uid"] = snapshot.key
+                    if let user = try? User(JSON: dict) {
+                        observer.onNext(user)
                     }
-
-                    let user = User(uid: uid,
-                                    name: username,
-                                    email: email,
-                                    avatar_url: avatarURL)
-
-                    observer.onNext(user)
             }, withCancel: { error in
                 observer.onError(error)
             })
@@ -245,7 +215,7 @@ class DatabaseManager {
                                                 return
                                             }
 
-                                            _ = self?.clearLastMessagasList()
+                                            _ = self?.clearLastMessagesList()
                                                 .subscribe(onNext: { [weak self] _ in
                                                     _ = self?.updateLastMessagesListForAllUsers()
                                                         .subscribe(onNext: {
@@ -264,7 +234,7 @@ class DatabaseManager {
         }
     }
 
-    private func clearLastMessagasList() -> Observable<Bool> {
+    private func clearLastMessagesList() -> Observable<Bool> {
         return Observable.create { [weak self] observer in
             self?.lastMessagesNode.removeValue(completionBlock: { error, ref in
                 if let error = error {
@@ -375,23 +345,16 @@ class DatabaseManager {
             self?.messagesNode.child(messageId).observeSingleEvent(
                 of: .value,
                 with: { snapshot in
-                    guard let dict = snapshot.value as? [String: AnyObject],
-                        let messageText = dict["text"] as? String,
-                        let fromId = dict["fromId"] as? String,
-                        let toId = dict["toId"] as? String,
-                        let timestamp = dict["timestamp"] as? TimeInterval else {
-                            observer.onError(NSError())
-                            return
+                    guard var dict = snapshot.value as? [String: Any] else {
+                        observer.onError(NSError())
+                        return
                     }
 
-                    let message = Message(id: messageId,
-                                          text: messageText,
-                                          fromId: fromId,
-                                          toId: toId,
-                                          timestamp: timestamp)
-                    
-                    observer.onNext(message)
-                    observer.onCompleted()
+                    dict["id"] = snapshot.key
+                    if let message = try? Message(JSON: dict) {
+                        observer.onNext(message)
+                        observer.onCompleted()
+                    }
             }, withCancel: { error in
                 observer.onError(error)
             })
