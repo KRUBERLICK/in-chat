@@ -76,9 +76,13 @@ class ChatViewController: ViewControllerWithKeyboard {
     }
 
     func getCompanionInfo() {
-        databaseManager.getUserInfo(uid: companionId)
+        databaseManager.getUserInfoContinuously(uid: companionId)
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] user in
+                guard user.name != self?.navigationItem.title else {
+                    return
+                }
+                
                 self?.navigationItemSpinner.stopAnimating()
                 self?.navigationItem.titleView = nil
                 self?.navigationItem.title = user.name
