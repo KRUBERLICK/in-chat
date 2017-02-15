@@ -183,11 +183,11 @@
 		5BB0D2AF1E410143000A1672 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				5BEA91661E534EE200C1940A /* AppAssembly.swift */,
 				5BB0D29D1E4100B7000A1672 /* AppDelegate.swift */,
 				5B8631171E530CC400B78B2E /* DataLayer */,
 				5BEA91561E53104800C1940A /* DomainLayer */,
 				5BEA915C1E531AF800C1940A /* PresentationLayer */,
-				5BEA91661E534EE200C1940A /* AppAssembly.swift */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -273,11 +273,11 @@
 		5BEA915E1E531B1500C1940A /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
+				5B130EF91E4891FC00BBC9C7 /* Profile */,
+				5B130EF81E4891F100BBC9C7 /* Chat */,
 				5B1A3CF01E41E65D003CE5A4 /* BaseDisplayNode.swift */,
 				5B075AD41E41108600A702BC /* LoginNode.swift */,
 				5BB380F11E4350EE00E1F315 /* UserCellNode.swift */,
-				5B130EF91E4891FC00BBC9C7 /* Profile */,
-				5B130EF81E4891F100BBC9C7 /* Chat */,
 				5B37D6AC1E4A283700BEE948 /* LastMessageCellNode.swift */,
 			);
 			name = Nodes;

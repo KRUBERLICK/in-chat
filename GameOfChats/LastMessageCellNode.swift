@@ -1,5 +1,6 @@
 import AsyncDisplayKit
 import Firebase
+import RxSwift
 
 class LastMessageCellNode: ASCellNode {
     let messageTextNode: ASTextNode = {
@@ -50,6 +51,7 @@ class LastMessageCellNode: ASCellNode {
     var onTap: ((String) -> ())?
     let databaseManager: DatabaseManager
     let authManager: AuthManager
+    let disposeBag = DisposeBag()
 
     init(message: Message,
          databaseManager: DatabaseManager,
@@ -79,7 +81,8 @@ class LastMessageCellNode: ASCellNode {
     }
 
     func bindData() {
-        _ = databaseManager.getUserInfo(
+        avatarImageNode.defaultImage = #imageLiteral(resourceName: "default_avatar")
+        databaseManager.getUserInfoContinuously(
             uid: message.toId == authManager.currentUserId
                 ? message.fromId
                 : message.toId
@@ -88,20 +91,24 @@ class LastMessageCellNode: ASCellNode {
                 guard let strongSelf = self else {
                     return
                 }
+
                 if let avatarImageURL = user.avatar_url {
-                    strongSelf.avatarImageNode.url = avatarImageURL
-                } else {
-                    strongSelf.avatarImageNode.image = #imageLiteral(resourceName: "default_avatar")
+                    strongSelf.avatarImageNode.setURL(avatarImageURL, resetToDefault: true)
+                } else if user.avatar_url == nil {
+                    strongSelf.avatarImageNode.url = nil
                 }
-                strongSelf.authorNameNode.attributedText = NSAttributedString(
-                    string: user.name,
-                    attributes: [NSForegroundColorAttributeName: UIColor.darkText,
-                                 NSFontAttributeName: UIFont.systemFont(
-                                    ofSize: 17,
-                                    weight: UIFontWeightBold)
-                    ]
-                )
+                if user.name != strongSelf.authorNameNode.attributedText?.string {
+                    strongSelf.authorNameNode.attributedText = NSAttributedString(
+                        string: user.name,
+                        attributes: [NSForegroundColorAttributeName: UIColor.darkText,
+                                     NSFontAttributeName: UIFont.systemFont(
+                                        ofSize: 17,
+                                        weight: UIFontWeightBold)
+                        ]
+                    )
+                }
             })
+            .addDisposableTo(disposeBag)
 
         messageTextNode.attributedText = NSAttributedString(
             string: message.fromId == authManager.currentUserId
