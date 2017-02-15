@@ -197,7 +197,10 @@ class LoginNode: BaseDisplayNode {
         }
     }
 
-    override init() {
+    let remoteConfigManager: RemoteConfigManager
+
+    init(remoteConfigManager: RemoteConfigManager) {
+        self.remoteConfigManager = remoteConfigManager
         super.init()
         usernameNode = ASDisplayNode(viewBlock: { [weak self] in self?.usernameTextField ?? UIView() })
         emailNode = ASDisplayNode(viewBlock: { [weak self] in self?.emailTextField ?? UIView() })
@@ -248,6 +251,14 @@ class LoginNode: BaseDisplayNode {
             )
         }
 
+        if !remoteConfigManager.getValue(for: .registrationEnabled).boolValue {
+            return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0,
+                                                          left: 30,
+                                                          bottom: 0,
+                                                          right: 30),
+                                     child: addTitleStack)
+        }
+
         let bottomStack = ASStackLayoutSpec(direction: .vertical,
                                             spacing: 0,
                                             justifyContent: .center,
@@ -271,6 +282,14 @@ class LoginNode: BaseDisplayNode {
 
     override func didLoad() {
         super.didLoad()
+
+        _ = remoteConfigManager.update()
+            .subscribe(onNext: { [weak self] _ in
+                self?.transitionLayout(withAnimation: true,
+                                       shouldMeasureAsync: true,
+                                       measurementCompletion: nil)
+            })
+
         keyboardController.parentView = view
         mainButtonNode.layer.shadowColor = UIColor.black.cgColor
         mainButtonNode.layer.shadowOpacity = 0.2

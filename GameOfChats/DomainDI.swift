@@ -26,5 +26,8 @@ class DomainLayerDIModule: DIModule {
         builder.register(AuthManager.self)
             .initializer { AuthManager(authProvider: *!$0) }
             .lifetime(.lazySingle)
+        builder.register(RemoteConfigManager.self)
+            .initializer { RemoteConfigManager() }
+            .lifetime(.lazySingle)
     }
 }

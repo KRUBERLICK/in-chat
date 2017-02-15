@@ -10,5 +10,6 @@ target 'InChat' do
     pod 'Firebase/Database'
     pod 'Firebase/Auth'
     pod 'Firebase/Storage'
+    pod 'Firebase/RemoteConfig'
     pod 'DITranquillity'
 end

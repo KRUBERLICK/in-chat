@@ -12,6 +12,8 @@
 		5B075AD31E41071A00A702BC /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B075AD21E41071A00A702BC /* Utils.swift */; };
 		5B075AD51E41108600A702BC /* LoginNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B075AD41E41108600A702BC /* LoginNode.swift */; };
 		5B075AD91E41133A00A702BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5B075ADB1E41133A00A702BC /* Localizable.strings */; };
+		5B10F20B1E5491A2007C703C /* RemoteConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B10F20A1E5491A2007C703C /* RemoteConfigManager.swift */; };
+		5B10F20D1E5491F3007C703C /* RemoteConfigDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5B10F20C1E5491F3007C703C /* RemoteConfigDefaults.plist */; };
 		5B130EF31E48868900BBC9C7 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B130EF21E48868900BBC9C7 /* ChatViewController.swift */; };
 		5B130EF51E4888CB00BBC9C7 /* ChatNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B130EF41E4888CB00BBC9C7 /* ChatNode.swift */; };
 		5B130EF71E4891DA00BBC9C7 /* InputContainerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B130EF61E4891DA00BBC9C7 /* InputContainerNode.swift */; };
@@ -56,6 +58,8 @@
 		5B075ADA1E41133A00A702BC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5B075ADF1E4114CF00A702BC /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5B075AE01E4114D800A702BC /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5B10F20A1E5491A2007C703C /* RemoteConfigManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteConfigManager.swift; sourceTree = "<group>"; };
+		5B10F20C1E5491F3007C703C /* RemoteConfigDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = RemoteConfigDefaults.plist; sourceTree = "<group>"; };
 		5B130EF21E48868900BBC9C7 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		5B130EF41E4888CB00BBC9C7 /* ChatNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatNode.swift; sourceTree = "<group>"; };
 		5B130EF61E4891DA00BBC9C7 /* InputContainerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputContainerNode.swift; sourceTree = "<group>"; };
@@ -201,6 +205,7 @@
 				5BB0D2A91E4100B7000A1672 /* Info.plist */,
 				5B3BB9621E423FD3009FB91B /* GoogleService-Info.plist */,
 				5B756F921E44D28F00CC49A0 /* InfoPlist.strings */,
+				5B10F20C1E5491F3007C703C /* RemoteConfigDefaults.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -229,6 +234,7 @@
 			children = (
 				5B9E320C1E4243DF007C4AD3 /* DatabaseManager.swift */,
 				5B9E320F1E425114007C4AD3 /* AuthManager.swift */,
+				5B10F20A1E5491A2007C703C /* RemoteConfigManager.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -390,6 +396,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B10F20D1E5491F3007C703C /* RemoteConfigDefaults.plist in Resources */,
 				5BB0D2A81E4100B7000A1672 /* LaunchScreen.storyboard in Resources */,
 				5B3BB9631E423FD3009FB91B /* GoogleService-Info.plist in Resources */,
 				5B075AD91E41133A00A702BC /* Localizable.strings in Resources */,
@@ -485,6 +492,7 @@
 				5B1A3CF31E4225D3003CE5A4 /* KeyboardController.swift in Sources */,
 				5BB380EC1E43403A00E1F315 /* User.swift in Sources */,
 				5BEA91651E53284D00C1940A /* PresentationManager.swift in Sources */,
+				5B10F20B1E5491A2007C703C /* RemoteConfigManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

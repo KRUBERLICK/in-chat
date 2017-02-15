@@ -20,7 +20,7 @@ class PresentationLayerDIModule: DIModule {
             .lifetime(.perDependency)
         // Nodes
         builder.register(LoginNode.self)
-            .initializer { LoginNode() }
+            .initializer { LoginNode(remoteConfigManager: *!$0) }
             .dependency { $1.keyboardController = *!$0 }
             .lifetime(.perDependency)
         builder.register(UserCellNode.self)
