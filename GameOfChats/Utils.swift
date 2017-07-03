@@ -40,7 +40,7 @@ extension UIColor {
 extension UIColor {
     @nonobjc static var navigationBarBackground = UIColor(hexString: "23B7FB")
     @nonobjc static var lightBackground = UIColor(hexString: "F7FCFF")
-    @nonobjc static var darkText = UIColor(hexString: "393939")
+//    @nonobjc static var darkText = UIColor(hexString: "393939")
     @nonobjc static var disabledText = UIColor(hexString: "A7A7A7")
     @nonobjc static var profileHeaderBackground = UIColor(hexString: "4486D4")
     @nonobjc static var loginTextFieldBackground = UIColor(hexString: "3595C0")
